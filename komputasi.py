@@ -118,6 +118,9 @@ def MBA(df, pembeli, produk):
         for antecedent in matrix['antecedents']:
             recommended_products |= set(antecedent.split(', '))
         recommended_products = list(recommended_products)
+        
+        matrix = matrix.reset_index(drop=True)
+        
         st.write("Rekomendasi stok barang yang harus dibeli:")
         st.write(recommended_products)
         
