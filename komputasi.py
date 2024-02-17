@@ -89,7 +89,6 @@ def MBA(df, pembeli, produk):
     frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)   #nilai support yang digunakan
     rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5) #nilai confidence yang digunakan
 
-
     st.subheader('Hasil Rules')
     antecedents = rules['antecedents'].apply(prep_frozenset)
     consequents = rules['consequents'].apply(prep_frozenset)
@@ -101,24 +100,29 @@ def MBA(df, pembeli, produk):
         'lift':rules['lift'],
     }
     matrix = pd.DataFrame(matrix)
-    n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
-    matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
+    show_all_rules = st.button("Tampilkan Seluruh Rules")  # Tombol untuk menampilkan seluruh rules
     
-    st.write('- Support merupakan perbandingan jumlah transaksi A dan B dengan total semua transaksi')
-    st.write('- Confidence merupakan perbandingan jumlah transaksi A dan B dengan total transaksi A')
-    st.write('- Lift merupakan ukuran kekuatan rules "Jika customer membeli A, maka membeli B"')
-    
-    # Menambahkan rekomendasi stok barang yang harus dibeli
-    recommended_products = set()
-    for antecedent in matrix['antecedents']:
-        recommended_products |= set(antecedent.split(', '))
-    recommended_products = list(recommended_products)
-    st.write("Rekomendasi stok barang yang harus dibeli:")
-    st.write(recommended_products)
-    
-    for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
-        st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
-        st.write('Support : {:.3f}'.format(supp))
-        st.write('Confidence : {:.3f}'.format(conf))
-        st.write('Lift : {:.3f}'.format(lift))
-        st.write('')
+    if show_all_rules:
+        st.write(matrix)
+    else:
+        n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
+        matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
+        
+        st.write('- Support merupakan perbandingan jumlah transaksi A dan B dengan total semua transaksi')
+        st.write('- Confidence merupakan perbandingan jumlah transaksi A dan B dengan total transaksi A')
+        st.write('- Lift merupakan ukuran kekuatan rules "Jika customer membeli A, maka membeli B"')
+        
+        # Menambahkan rekomendasi stok barang yang harus dibeli
+        recommended_products = set()
+        for antecedent in matrix['antecedents']:
+            recommended_products |= set(antecedent.split(', '))
+        recommended_products = list(recommended_products)
+        st.write("Rekomendasi stok barang yang harus dibeli:")
+        st.write(recommended_products)
+        
+        for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
+            st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
+            st.write('Support : {:.3f}'.format(supp))
+            st.write('Confidence : {:.3f}'.format(conf))
+            st.write('Lift : {:.3f}'.format(lift))
+            st.write('')
