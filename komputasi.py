@@ -120,6 +120,7 @@ def MBA(df, pembeli, produk):
         recommended_products = list(recommended_products)
         
         matrix = matrix.reset_index(drop=True)
+        matrix.index += 1
         
         st.write("Rekomendasi stok barang yang harus dibeli:")
         st.write(recommended_products)
