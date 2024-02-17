@@ -34,8 +34,7 @@ def dataset_settings(df, pembeli, tanggal, produk):
         df = df[df['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both")]
     return df
 
-
-def show_transaction_info(df, produk, pembeli, min_support, min_confidence):
+def show_transaction_info(df, produk, pembeli):
     col1, col2 = st.columns(2)
     st.subheader(f'Informasi Transaksi:')
     total_produk = df[produk].nunique()
@@ -50,11 +49,10 @@ def show_transaction_info(df, produk, pembeli, min_support, min_confidence):
         most_sold = df[produk].value_counts().tail(jumlah)
         most_sold = most_sold.sort_values(ascending=True)
     c1, c2 = st.columns((2, 1))
-    c1.bar_chart(most_sold)  # Menggunakan bar_chart untuk menampilkan plot
+    most_sold.plot(kind='bar')
+    plt.title('Jumlah Produk Terjual')
+    c1.pyplot(plt)
     c2.write(most_sold)
-    
-    # Memanggil fungsi MBA dengan nilai support dan confidence yang disetel oleh pengguna
-    MBA(df, pembeli, produk, min_support, min_confidence)
 
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
@@ -69,9 +67,7 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
-    support = st.slider('Tentukan nilai support:', 0.01, 1.0, 0.5, 0.01)
-    confidence = st.slider('Tentukan nilai confidence:', 0.1, 1.0, 0.5, 0.1)
-    show_transaction_info(df, produk, pembeli, support, confidence)
+    show_transaction_info(df, produk, pembeli)
     return df
     
 def prep_frozenset(rules):
@@ -79,7 +75,7 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
-def MBA(df, pembeli, produk, min_support, min_confidence):
+def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     transaction_list = []
     for i in df[pembeli].unique():
@@ -90,8 +86,8 @@ def MBA(df, pembeli, produk, min_support, min_confidence):
     te = TransactionEncoder()
     te_ary = te.fit(transaction_list).transform(transaction_list)
     df2 = pd.DataFrame(te_ary, columns=te.columns_)
-    frequent_itemsets = apriori(df2, min_support=min_support, use_colnames=True)
-    rules = association_rules(frequent_itemsets, metric='lift', min_threshold=min_confidence)
+    frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)
+    rules = association_rules(frequent_itemsets, metric='lift')
 
     st.subheader('Hasil Rules')
     antecedents = rules['antecedents'].apply(prep_frozenset)
@@ -104,7 +100,7 @@ def MBA(df, pembeli, produk, min_support, min_confidence):
         'lift':rules['lift'],
     }
     matrix = pd.DataFrame(matrix)
-    n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(matrix), 1)
+    n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
     matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
     
     st.write('- Support merupakan perbandingan jumlah transaksi A dan B dengan total semua transaksi')
