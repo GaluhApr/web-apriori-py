@@ -121,7 +121,7 @@ def MBA(df, pembeli, produk):
         
         
         st.write("Rekomendasi stok barang yang harus dibeli:")
-        st.write(recommended_products, start=1)
+        st.write(recommended_products)
         
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
