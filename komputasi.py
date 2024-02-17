@@ -75,7 +75,7 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
-def MBA(df, pembeli, produk):
+def MBA(df, pembeli, produk, min_support=0.01, min_confidence=0.5):
     st.header('Association Rule Mining Menggunakan Apriori')
     transaction_list = []
     for i in df[pembeli].unique():
@@ -86,8 +86,8 @@ def MBA(df, pembeli, produk):
     te = TransactionEncoder()
     te_ary = te.fit(transaction_list).transform(transaction_list)
     df2 = pd.DataFrame(te_ary, columns=te.columns_)
-    frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)
-    rules = association_rules(frequent_itemsets, metric='lift')
+    frequent_itemsets = apriori(df2, min_support=min_support, use_colnames=True)
+    rules = association_rules(frequent_itemsets, metric='lift', min_threshold=min_confidence)
 
     st.subheader('Hasil Rules')
     antecedents = rules['antecedents'].apply(prep_frozenset)
