@@ -49,9 +49,7 @@ def show_transaction_info(df, produk, pembeli):
         most_sold = df[produk].value_counts().tail(jumlah)
         most_sold = most_sold.sort_values(ascending=True)
     c1, c2 = st.columns((2, 1))
-    most_sold.plot(kind='bar')
-    plt.title('Jumlah Produk Terjual')
-    c1.pyplot(plt)
+    c1.bar_chart(most_sold)  # Menggunakan bar_chart untuk menampilkan plot
     c2.write(most_sold)
 
 def data_summary(df, pembeli, tanggal, produk):
@@ -121,32 +119,3 @@ def MBA(df, pembeli, produk):
         st.write('Confidence : {:.3f}'.format(conf))
         st.write('Lift : {:.3f}'.format(lift))
         st.write('')
-
-
-    #st.dataframe(consequents)
-    # antecedents = [str(x) for x in rules['antecedents']]
-    # #antecedents = antecedents.flatten()
-    # consequents = [str(x) for x in rules['consequents']]
-    # antecedent_support = list(rules['antecedent support'])
-    # consequent_support = list(rules['consequent support'])
-    # support = list(rules['support'])
-    # confidence = list(rules['confidence'])
-    # lift = list(rules['lift'])
-    # leverage = list(rules['leverage'])
-    # conviction = list(rules['conviction'])
-    # matrix = {
-    #     'antecedents':antecedents,
-    #     'consequents': consequents
-    # }
-    # df = pd.DataFrame(matrix)
-    # # st.write(rules_col)
-    # st.dataframe(matrix)
-    # st.write(len(antecedents))
-    # st.write((consequents))
-    # st.write((antecedent_support))
-    # st.write((consequent_support))
-    # st.write((support))
-    # st.write((confidence))
-    # st.write((lift))
-    # st.write((leverage))
-    # st.write((conviction))
