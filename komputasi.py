@@ -10,16 +10,16 @@ from mlxtend.frequent_patterns import association_rules, apriori
 
 def prep_date(df, tanggal, sep, dateformat):
     if dateformat == 'ddmmyy':
-        df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
-        df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[1]))
+        df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[0].replace('-', '/')))
+        df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[1].replace('-', '/')))
         df['Tahun'] = df[tanggal].apply(lambda x: int(x.split(sep)[2]))
     elif dateformat == 'mmddyy':
-        df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[1]))
-        df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
+        df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[1].replace('-', '/')))
+        df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[0].replace('-', '/')))
         df['Tahun'] = df[tanggal].apply(lambda x: int(x.split(sep)[2]))
     elif dateformat == 'yymmdd':
-        df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[2]))
-        df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[1]))
+        df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[2].replace('-', '/')))
+        df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[1].replace('-', '/')))
         df['Tahun'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
     return df
 
