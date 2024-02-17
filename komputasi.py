@@ -34,7 +34,8 @@ def dataset_settings(df, pembeli, tanggal, produk):
         df = df[df['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both")]
     return df
 
-def show_transaction_info(df, produk, pembeli):
+
+def show_transaction_info(df, produk, pembeli, min_support, min_confidence):
     col1, col2 = st.columns(2)
     st.subheader(f'Informasi Transaksi:')
     total_produk = df[produk].nunique()
@@ -49,10 +50,11 @@ def show_transaction_info(df, produk, pembeli):
         most_sold = df[produk].value_counts().tail(jumlah)
         most_sold = most_sold.sort_values(ascending=True)
     c1, c2 = st.columns((2, 1))
-    most_sold.plot(kind='bar')
-    plt.title('Jumlah Produk Terjual')
-    c1.pyplot(plt)
+    c1.bar_chart(most_sold)  # Menggunakan bar_chart untuk menampilkan plot
     c2.write(most_sold)
+    
+    # Memanggil fungsi MBA dengan nilai support dan confidence yang disetel oleh pengguna
+    MBA(df, pembeli, produk, min_support, min_confidence)
 
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
@@ -67,7 +69,9 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
-    show_transaction_info(df, produk, pembeli)
+    support = st.slider('Tentukan nilai support:', 0.01, 1.0, 0.5, 0.01)
+    confidence = st.slider('Tentukan nilai confidence:', 0.1, 1.0, 0.5, 0.1)
+    show_transaction_info(df, produk, pembeli, support, confidence)
     return df
     
 def prep_frozenset(rules):
