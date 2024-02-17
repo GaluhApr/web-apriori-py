@@ -53,14 +53,13 @@ def show_transaction_info(df, produk, pembeli):
     plt.title('Jumlah Produk Terjual')
     c1.pyplot(plt)
     c2.write(most_sold)
-
+    
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
-    col1, col2 = st.columns(2)
-    sep = col1.radio('Tentukan separator tanggal', ('/', '-'))
-    dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
+    separator_tanggal = st.radio('Tentukan separator tanggal', ('-', '/'))
+    dateformat = st.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
     try:
-        df = prep_date(df, tanggal, sep, dateformat)
+        df = prep_date(df, tanggal, separator_tanggal, dateformat)
     except:
         st.warning('Separator tanggal salah!')
         st.stop()
@@ -69,6 +68,7 @@ def data_summary(df, pembeli, tanggal, produk):
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
     show_transaction_info(df, produk, pembeli)
     return df
+
     
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
