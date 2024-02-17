@@ -119,11 +119,10 @@ def MBA(df, pembeli, produk):
             recommended_products |= set(antecedent.split(', '))
         recommended_products = list(recommended_products)
         
-        matrix = matrix.reset_index(drop=True)
-        matrix.index += 1
         
         st.write("Rekomendasi stok barang yang harus dibeli:")
-        st.write(recommended_products)
+        for i, product in enumerate(recommended_products, start=1):
+            st.write(f"{i}. {product}")
         
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
