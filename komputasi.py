@@ -79,7 +79,7 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
-def MBA(df, pembeli, produk, min_support=0.01, min_confidence=0.5):
+def MBA(df, pembeli, produk, min_support, min_confidence):
     st.header('Association Rule Mining Menggunakan Apriori')
     transaction_list = []
     for i in df[pembeli].unique():
@@ -104,7 +104,7 @@ def MBA(df, pembeli, produk, min_support=0.01, min_confidence=0.5):
         'lift':rules['lift'],
     }
     matrix = pd.DataFrame(matrix)
-    n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
+    n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(matrix), 1)
     matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
     
     st.write('- Support merupakan perbandingan jumlah transaksi A dan B dengan total semua transaksi')
