@@ -47,10 +47,11 @@ def show_transaction_info(df, produk, pembeli):
         most_sold = df[produk].value_counts().head(jumlah)
     else:
         most_sold = df[produk].value_counts().tail(jumlah)
-        most_sold = most_sold.sort_values(ascending=True)
+    most_sold = most_sold.sort_values(ascending=True)  # Urutkan data sebelum plotting
     c1, c2 = st.columns((2, 1))
     c1.bar_chart(most_sold)  # Menggunakan bar_chart untuk menampilkan plot
     c2.write(most_sold)
+
 
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
