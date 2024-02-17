@@ -44,13 +44,15 @@ def show_transaction_info(df, produk, pembeli):
     sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
     jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 5)
     if sort == 'Terlaris':
-        most_sold = df[produk].value_counts().head(jumlah).sort_values(ascending=False)  # Urutkan secara menurun
+        most_sold = df[produk].value_counts().head(jumlah)
     else:
-        most_sold = df[produk].value_counts().tail(jumlah).sort_values(ascending=True)   # Urutkan secara menaik
+        most_sold = df[produk].value_counts().tail(jumlah)
+        most_sold = most_sold.sort_values(ascending=True)
     c1, c2 = st.columns((2, 1))
-    c1.bar_chart(most_sold)  # Menggunakan bar_chart untuk menampilkan plot
+    most_sold.plot(kind='bar')
+    plt.title('Jumlah Produk Terjual')
+    c1.pyplot(plt)
     c2.write(most_sold)
-
 
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
