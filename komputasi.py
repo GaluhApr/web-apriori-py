@@ -103,8 +103,8 @@ def MBA(df, pembeli, produk):
     show_all_rules = st.button("Tampilkan Seluruh Rules")  # Tombol untuk menampilkan seluruh rules
     
     if show_all_rules:
-        st.write(matrix)
         st.button("Tutup")
+        st.write(matrix)
     else:
         n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
         matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
