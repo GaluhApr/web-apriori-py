@@ -47,10 +47,11 @@ def show_transaction_info(df, produk, pembeli):
         most_sold = df[produk].value_counts().head(jumlah)
     else:
         most_sold = df[produk].value_counts().tail(jumlah)
-    most_sold = most_sold.sort_values(ascending=True)  # Urutkan data sebelum plotting
+    sorted_indices = np.argsort(most_sold.values)
+    most_sold_sorted = most_sold.iloc[sorted_indices[::-1]]  # Flip array karena argsort mengurutkan dari nilai terkecil
     c1, c2 = st.columns((2, 1))
-    c1.bar_chart(most_sold)  # Menggunakan bar_chart untuk menampilkan plot
-    c2.write(most_sold)
+    c1.bar_chart(most_sold_sorted)  # Menggunakan bar_chart untuk menampilkan plot
+    c2.write(most_sold_sorted)
 
 
 def data_summary(df, pembeli, tanggal, produk):
