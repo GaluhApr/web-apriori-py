@@ -47,9 +47,11 @@ def show_transaction_info(df, produk, pembeli):
         most_sold = df[produk].value_counts().head(jumlah)
     else:
         most_sold = df[produk].value_counts().tail(jumlah)
-        most_sold = most_sold.sort_values(ascending=False)  # Urutkan berdasarkan nilai terbesar ke terkecil
+        most_sold = most_sold.sort_values(ascending=True)
     c1, c2 = st.columns((2, 1))
-    c1.bar_chart(most_sold)  # Menggunakan method bar_chart untuk menampilkan plot
+    most_sold.plot(kind='bar')
+    plt.title('Jumlah Produk Terjual')
+    c1.pyplot(plt)
     c2.write(most_sold)
 
 def data_summary(df, pembeli, tanggal, produk):
