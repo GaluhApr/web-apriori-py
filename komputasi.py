@@ -109,9 +109,16 @@ def MBA(df, pembeli, produk):
         n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
         matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
         
-        st.write('- Support merupakan perbandingan jumlah transaksi A dan B dengan total semua transaksi')
-        st.write('- Confidence merupakan perbandingan jumlah transaksi A dan B dengan total transaksi A')
-        st.write('- Lift merupakan ukuran kekuatan rules "Jika customer membeli A, maka membeli B"')
+        st.write('Support')
+        st.write('- Support mengindikasikan seberapa sering itemset tertentu muncul dalam dataset transaksi')
+        st.write('- Semakin tinggi nilai support, semakin sering itemset tersebut muncul dalam transaksi, yang menunjukkan bahwa itemset tersebut relatif populer atau sering dibeli bersama')
+        st.write('Confidence')
+        st.write('- confidence mengindikasikan seberapa sering itemset A dan itemset B muncul bersamaan dalam transaksi, dibandingkan dengan seberapa sering itemset A muncul sendiri')
+        st.write('- Nilai confidence yang tinggi menunjukkan bahwa aturan asosiasi tersebut memiliki kecenderungan yang kuat untuk terjadi')
+        st.write('Lift')
+        st.write('- Lift merupakan ukuran kekuatan aturan asosiasi')
+        st.write('- Nilai lift lebih dari 1 menunjukkan bahwa itemset A dan itemset B muncul bersamaan lebih sering dari yang diharapkan secara acak, yang menunjukkan adanya korelasi positif antara keduanya')
+        st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
         
         # Menambahkan rekomendasi stok barang yang harus dibeli
         recommended_products = set()
