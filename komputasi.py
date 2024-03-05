@@ -94,7 +94,11 @@ def MBA(df, pembeli, produk):
     te_ary = te.fit(transaction_list).transform(transaction_list)
     df2 = pd.DataFrame(te_ary, columns=te.columns_)
     frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)   #nilai support yang digunakan
-    rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5) #nilai confidence yang digunakan
+    try:
+        rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5) #nilai confidence yang digunakan
+    except ValueError as e:
+        st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
+        st.stop()
 
     st.subheader('Hasil Rules')
 
