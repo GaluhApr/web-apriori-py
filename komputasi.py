@@ -35,24 +35,31 @@ def dataset_settings(df, pembeli, tanggal, produk):
     return df
 
 def show_transaction_info(df, produk, pembeli):
-    col1, col2 = st.columns(2)
-    st.subheader(f'Informasi Transaksi:')
-    total_produk = df[produk].nunique()
-    total_transaksi = df[pembeli].nunique()
-    col1.info(f'Total produk     : {total_produk}')
-    col2.info(f'Total transaksi  : {total_transaksi}')
-    sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
-    jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 5)
-    if sort == 'Terlaris':
-        most_sold = df[produk].value_counts().head(jumlah)
-    else:
-        most_sold = df[produk].value_counts().tail(jumlah)
-        most_sold = most_sold.sort_values(ascending=True)
-    c1, c2 = st.columns((2, 1))
-    most_sold.plot(kind='bar')
-    plt.title('Jumlah Produk Terjual')
-    c1.pyplot(plt)
-    c2.write(most_sold)
+    try:
+        col1, col2 = st.columns(2)
+        st.subheader(f'Informasi Transaksi:')
+        total_produk = df[produk].nunique()
+        total_transaksi = df[pembeli].nunique()
+        col1.info(f'Total produk     : {total_produk}')
+        col2.info(f'Total transaksi  : {total_transaksi}')
+        sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
+        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 5)
+        if sort == 'Terlaris':
+            most_sold = df[produk].value_counts().head(jumlah)
+        else:
+            most_sold = df[produk].value_counts().tail(jumlah)
+            most_sold = most_sold.sort_values(ascending=True)
+        if not most_sold.empty:
+            c1, c2 = st.columns((2, 1))
+            most_sold.plot(kind='bar')
+            plt.title('Jumlah Produk Terjual')
+            c1.pyplot(plt)
+            c2.write(most_sold)
+        else:
+            st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
+    except Exception as e:
+        st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
+
 
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
