@@ -113,6 +113,7 @@ def MBA(df, pembeli, produk):
             'support':rules['support'],
             'confidence':rules['confidence'],
             'lift':rules['lift'],
+            'contribution': rules['support'] * rules['confidence']
         }
         matrix = pd.DataFrame(matrix)
         st.write(matrix)
@@ -127,27 +128,30 @@ def MBA(df, pembeli, produk):
         st.write('- Lift merupakan ukuran kekuatan aturan asosiasi')
         st.write('- Nilai lift lebih dari 1 menunjukkan bahwa itemset A dan itemset B muncul bersamaan lebih sering dari yang diharapkan secara acak, yang menunjukkan adanya korelasi positif antara keduanya')
         st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
+        st.write('Contribution')
+        st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
         
-        # Menambahkan rekomendasi stok barang yang harus dibeli beserta jumlah penjualannya
+        # Menambahkan rekomendasi stok barang yang harus dibeli
         recommended_products = set()
-        for consequent in matrix['consequents']:
-            recommended_products |= set(consequent.split(', '))
+        recommended_products_contribution = {}
+        for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
+            consequent_list = consequent.split(', ')
+            for item in consequent_list:
+                if item not in recommended_products_contribution:
+                    recommended_products_contribution[item] = contribution
+                else:
+                    recommended_products_contribution[item] += contribution
+            recommended_products |= set(consequent_list)
         recommended_products = list(recommended_products)
         
-        # Hitung jumlah barang yang terjual untuk setiap barang yang direkomendasikan
-        sold_counts = {}
-        for product in recommended_products:
-            sold_counts[product] = df[df[produk].str.contains(product)].shape[0]
+        st.write("Rekomendasi stok barang yang harus dibeli beserta kontribusi:")
+        for item in recommended_products:
+            st.write(f"{item}: {recommended_products_contribution[item]}")
 
-        # Tampilkan rekomendasi stok barang beserta jumlah penjualan
-        st.write("Rekomendasi stok barang yang harus dibeli beserta jumlah penjualan:")
-        for product in recommended_products:
-            st.write(f"{product}: {sold_counts.get(product, 0)} terjual")
-        
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
             st.write('Support : {:.3f}'.format(supp))
             st.write('Confidence : {:.3f}'.format(conf))
             st.write('Lift : {:.3f}'.format(lift))
+            st.write('Contribution : {:.3f}'.format(supp * conf))
             st.write('')
-
