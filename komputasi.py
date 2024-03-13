@@ -145,13 +145,6 @@ def MBA(df, pembeli, produk):
             st.write("Rekomendasi stok barang yang harus dibeli:")
             st.write(recommended_products)
             
-            # Menambahkan informasi jumlah barang yang terjual disamping nama barang
-            df['jumlah_terjual'] = df.groupby(produk)[produk].transform('count')
-            df_info = df[[produk, 'jumlah_terjual']].drop_duplicates().set_index(produk)
-            df_info = df_info.loc[recommended_products]
-            st.write("Jumlah barang terjual:")
-            st.write(df_info)
-            
             for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
