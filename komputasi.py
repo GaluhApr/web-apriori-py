@@ -54,7 +54,7 @@ def show_transaction_info(df, produk, pembeli):
             most_sold.plot(kind='bar')
             plt.title('Jumlah Produk Terjual')
             c1.pyplot(plt)
-            c2.write(most_sold, height=len(most_sold)*0.8)
+            c2.write(most_sold, height=len(most_sold)*0.6)
         else:
             st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
     except Exception as e:
