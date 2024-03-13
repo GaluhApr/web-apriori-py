@@ -124,11 +124,18 @@ def MBA(df, pembeli, produk):
             n_rules = st.number_input('Tentukan jumlah rules yang ingin ditampilkan : ', 1, len(rules['antecedents']), 1)
             matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
             
+            # Mengambil data barang yang paling laris
+            sort = df[produk].value_counts().index.tolist()
+            
             # Menambahkan rekomendasi stok barang yang harus dibeli berdasarkan consequents
             recommended_products = set()
             for consequent in matrix['consequents']:
                 recommended_products |= set(consequent.split(', '))
             recommended_products = list(recommended_products)
+            
+            # Menggabungkan data barang yang paling laris dengan rekomendasi produk
+            recommended_products.extend(sort)
+            recommended_products = list(set(recommended_products))
             
             st.write("Rekomendasi stok barang yang harus dibeli:")
             st.write(recommended_products)
