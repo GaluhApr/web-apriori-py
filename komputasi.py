@@ -65,7 +65,7 @@ def show_transaction_info(df, produk, pembeli):
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
     col1, col2 = st.columns(2)
-    sep = col1.radio('Tentukan separator tanggal', ('-', '/'))
+    sep = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash (-)'), ('/', 'Slash (/)')])
     dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
     try:
         df = prep_date(df, tanggal, sep, dateformat)
@@ -77,6 +77,7 @@ def data_summary(df, pembeli, tanggal, produk):
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
     show_transaction_info(df, produk, pembeli)
     return df
+
     
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
