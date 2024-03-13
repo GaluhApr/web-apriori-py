@@ -124,18 +124,23 @@ def MBA(df, pembeli, produk):
             n_rules = st.number_input('Tentukan jumlah rules yang ingin ditampilkan : ', 1, len(rules['antecedents']), 1)
             matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
             
-            # Mengambil data barang yang paling laris
-            sort = df[produk].value_counts().index.tolist()
+            st.write('Support')
+            st.write('- Support mengindikasikan seberapa sering itemset tertentu muncul dalam dataset transaksi')
+            st.write('- Semakin tinggi nilai support, semakin sering itemset tersebut muncul dalam transaksi, yang menunjukkan bahwa itemset tersebut relatif populer atau sering dibeli bersama')
+            st.write('Confidence')
+            st.write('- confidence mengindikasikan seberapa sering itemset A dan itemset B muncul bersamaan dalam transaksi, dibandingkan dengan seberapa sering itemset A muncul sendiri')
+            st.write('- Nilai confidence yang tinggi menunjukkan bahwa aturan asosiasi tersebut memiliki kecenderungan yang kuat untuk terjadi')
+            st.write('Lift')
+            st.write('- Lift merupakan ukuran kekuatan aturan asosiasi')
+            st.write('- Nilai lift lebih dari 1 menunjukkan bahwa itemset A dan itemset B muncul bersamaan lebih sering dari yang diharapkan secara acak, yang menunjukkan adanya korelasi positif antara keduanya')
+            st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
             
-            # Menambahkan rekomendasi stok barang yang harus dibeli berdasarkan consequents
+            # Menambahkan rekomendasi stok barang yang harus dibeli
             recommended_products = set()
-            for consequent in matrix['consequents']:
-                recommended_products |= set(consequent.split(', '))
+            for antecedent in matrix['antecedents']:
+                recommended_products |= set(antecedent.split(', '))
             recommended_products = list(recommended_products)
             
-            # Menggabungkan data barang yang paling laris dengan rekomendasi produk
-            recommended_products.extend(sort)
-            recommended_products = list(set(recommended_products))
             
             st.write("Rekomendasi stok barang yang harus dibeli:")
             st.write(recommended_products)
@@ -146,4 +151,3 @@ def MBA(df, pembeli, produk):
                 st.write('Confidence : {:.3f}'.format(conf))
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('')
-
