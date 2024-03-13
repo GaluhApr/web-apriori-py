@@ -132,7 +132,7 @@ def MBA(df, pembeli, produk):
         st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
         st.write('Contribution')
         st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
-        st.write('-Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
+        st.write('- Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
         # Menambahkan rekomendasi stok barang yang harus dibeli berdasarkan kontribusi
         recommended_products = []
         recommended_products_contribution = {}
