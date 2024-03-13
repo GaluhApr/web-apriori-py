@@ -133,9 +133,17 @@ def MBA(df, pembeli, produk):
         for consequent in matrix['consequents']:
             recommended_products |= set(consequent.split(', '))
         recommended_products = list(recommended_products)
-        
+
+        # Hitung jumlah barang yang terjual untuk setiap barang yang direkomendasikan
+        sold_counts = {}
+        for product in recommended_products:
+            sold_counts[product] = df[df[produk].str.contains(product)].shape[0]
+
+        # Tampilkan rekomendasi stok barang beserta jumlah penjualan
         st.write("Rekomendasi stok barang yang harus dibeli:")
-        st.write(recommended_products)
+        for product in recommended_products:
+            st.write(f"{product}: {sold_counts.get(product, 0)} terjual")
+
         
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
