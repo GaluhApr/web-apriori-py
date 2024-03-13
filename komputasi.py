@@ -66,31 +66,33 @@ def data_summary(df, pembeli, tanggal, produk):
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
     dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
+    
+    # Memilih tahun dan bulan
+    year_list = ['Semua']
+    year_list = np.append(year_list, df['Tahun'].unique())
+    selected_year = st.selectbox('Pilih Tahun ', (year_list))
+    
+    if selected_year != 'Semua':
+        by_month = st.slider('Bulan', 1, 12, (1, 12))
+        df_filtered = df[(df['Tahun'] == int(selected_year)) & (df['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both"))]
+    else:
+        df_filtered = df.copy()
+    
     try:
-        df = prep_date(df, tanggal, sep, dateformat)
+        df_filtered = prep_date(df_filtered, tanggal, sep, dateformat)
     except:
         st.warning('Separator tanggal salah!')
         st.stop()
     
     st.write('Setelan Tampilan Dataset:')
-    df = dataset_settings(df, pembeli, tanggal, produk)
-    df_filtered = df.copy()  # Buat salinan dataset yang difilter untuk digunakan dalam MBA
-    
-    # Memilih tahun dan bulan
-    year_list = ['Semua']
-    year_list = np.append(year_list, df['Tahun'].unique())
-    by_year = st.selectbox('Tahun ', (year_list))
-    if by_year != 'Semua':
-        df_filtered = df_filtered[df_filtered['Tahun'] == int(by_year)]
-        by_month = st.slider('Bulan', 1, 12, (1, 12))
-        df_filtered = df_filtered[df_filtered['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both")]
-    
+    st.dataframe(df_filtered.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
+    df_filtered = dataset_settings(df_filtered, pembeli, tanggal, produk)
+
     # Tampilkan tombol untuk memulai proses MBA setelah memilih tahun dan bulan
-    if by_year != 'Semua' and st.button('Mulai Analisis Asosiasi'):
+    if selected_year != 'Semua' and st.button('Mulai Analisis Asosiasi'):
         show_transaction_info(df_filtered, produk, pembeli)
     
     return df_filtered
-
 
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
