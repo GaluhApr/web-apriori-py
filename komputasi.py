@@ -108,14 +108,16 @@ def MBA(df, pembeli, produk):
         antecedents = rules['antecedents'].apply(prep_frozenset)
         consequents = rules['consequents'].apply(prep_frozenset)
         matrix = {
-            'antecedents':antecedents,
+            'antecedents': antecedents,
             'consequents': consequents,
-            'support':rules['support'],
-            'confidence':rules['confidence'],
-            'lift':rules['lift'],
+            'support': rules['support'],
+            'confidence': rules['confidence'],
+            'lift': rules['lift'],
             'contribution': rules['support'] * rules['confidence']
         }
         matrix = pd.DataFrame(matrix)
+        matrix = matrix.sort_values(by='contribution', ascending=False)  # Urutkan berdasarkan kontribusi
+
         st.write(matrix)
         
         st.write('Support')
@@ -131,8 +133,8 @@ def MBA(df, pembeli, produk):
         st.write('Contribution')
         st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
         
-        # Menambahkan rekomendasi stok barang yang harus dibeli
-        recommended_products = set()
+        # Menambahkan rekomendasi stok barang yang harus dibeli berdasarkan kontribusi
+        recommended_products = []
         recommended_products_contribution = {}
         for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
             consequent_list = consequent.split(', ')
@@ -141,11 +143,12 @@ def MBA(df, pembeli, produk):
                     recommended_products_contribution[item] = contribution
                 else:
                     recommended_products_contribution[item] += contribution
-            recommended_products |= set(consequent_list)
-        recommended_products = list(recommended_products)
-        
-        st.write("Rekomendasi stok barang yang harus dibeli beserta kontribusi:")
-        for item in recommended_products:
+            recommended_products.extend(consequent_list)
+        recommended_products = list(set(recommended_products))  # Hapus duplikat
+
+        st.write("Rekomendasi stok barang yang harus dibeli beserta kontribusi (diurutkan berdasarkan kontribusi tertinggi):")
+        recommended_products_sorted = sorted(recommended_products, key=lambda x: recommended_products_contribution[x], reverse=True)
+        for item in recommended_products_sorted:
             st.write(f"{item}: {recommended_products_contribution[item]}")
 
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
