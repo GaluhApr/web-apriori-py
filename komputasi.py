@@ -23,60 +23,6 @@ def prep_date(df, tanggal, sep, dateformat):
         df['Tahun'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
     return df
 
-def dataset_settings(df, pembeli, tanggal, produk):
-    c1, c2 = st.columns((2, 1))
-    year_list = ['Semua']
-    year_list = np.append(year_list, df['Tahun'].unique())
-    by_year = c1.selectbox('Tahun ', (year_list))
-    if by_year != 'Semua':
-        df = df[df['Tahun'] == int(by_year)]
-        by_month = c2.slider('Bulan', 1, 12, (1, 12))
-        df = df[df['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both")]
-    return df
-
-def show_transaction_info(df, produk, pembeli):
-    try:
-        col1, col2 = st.columns(2)
-        st.subheader(f'Informasi Transaksi:')
-        total_produk = df[produk].nunique()
-        total_transaksi = df[pembeli].nunique()
-        col1.info(f'Total produk     : {total_produk}')
-        col2.info(f'Total transaksi  : {total_transaksi}')
-        sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
-        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 5)
-        if sort == 'Terlaris':
-            most_sold = df[produk].value_counts().head(jumlah)
-        else:
-            most_sold = df[produk].value_counts().tail(jumlah)
-            most_sold = most_sold.sort_values(ascending=True)
-        if not most_sold.empty:
-            c1, c2 = st.columns((2, 1))
-            most_sold.plot(kind='bar')
-            plt.title('Jumlah Produk Terjual')
-            c1.pyplot(plt)
-            c2.write(most_sold)
-        else:
-            st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
-    except Exception as e:
-        st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
-
-
-def data_summary(df, pembeli, tanggal, produk):
-    st.header('Ringkasan Dataset')
-    col1, col2 = st.columns(2)
-    sep = col1.radio('Tentukan separator tanggal', ('-', '/'))
-    dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
-    try:
-        df = prep_date(df, tanggal, sep, dateformat)
-    except:
-        st.warning('Separator tanggal salah!')
-        st.stop()
-    st.write('Setelan Tampilan Dataset:')
-    df = dataset_settings(df, pembeli, tanggal, produk)
-    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
-    show_transaction_info(df, produk, pembeli)
-    return df
-    
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
     temp = re.sub(r'}\)', '', temp)
@@ -94,60 +40,70 @@ def MBA(df, pembeli, produk):
     te_ary = te.fit(transaction_list).transform(transaction_list)
     df2 = pd.DataFrame(te_ary, columns=te.columns_)
     frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)   #nilai support yang digunakan
-    try:
-        rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5) #nilai confidence yang digunakan
-    except ValueError as e:
-        st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
-        st.stop()
+    rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5) #nilai confidence yang digunakan
 
     st.subheader('Hasil Rules')
-
-    if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
-        st.write("Tidak ada aturan yang dihasilkan.")
+    antecedents = rules['antecedents'].apply(prep_frozenset)
+    consequents = rules['consequents'].apply(prep_frozenset)
+    matrix = {
+        'antecedents':antecedents,
+        'consequents': consequents,
+        'support':rules['support'],
+        'confidence':rules['confidence'],
+        'lift':rules['lift'],
+    }
+    matrix = pd.DataFrame(matrix)
+    show_all_rules = st.button("Tampilkan Seluruh Rules")  # Tombol untuk menampilkan seluruh rules
+    
+    if show_all_rules:
+        st.button("Tutup")
+        st.write(matrix)
     else:
-        antecedents = rules['antecedents'].apply(prep_frozenset)
-        consequents = rules['consequents'].apply(prep_frozenset)
-        matrix = {
-            'antecedents':antecedents,
-            'consequents': consequents,
-            'support':rules['support'],
-            'confidence':rules['confidence'],
-            'lift':rules['lift'],
-        }
-        matrix = pd.DataFrame(matrix)
-        show_all_rules = st.button("Tampilkan Seluruh Rules")  # Tombol untuk menampilkan seluruh rules
+        n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
+        matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
         
-        if show_all_rules:
-            st.button("Tutup")
-            st.write(matrix)
-        else:
-            n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
-            matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
-            
-            st.write('Support')
-            st.write('- Support mengindikasikan seberapa sering itemset tertentu muncul dalam dataset transaksi')
-            st.write('- Semakin tinggi nilai support, semakin sering itemset tersebut muncul dalam transaksi, yang menunjukkan bahwa itemset tersebut relatif populer atau sering dibeli bersama')
-            st.write('Confidence')
-            st.write('- confidence mengindikasikan seberapa sering itemset A dan itemset B muncul bersamaan dalam transaksi, dibandingkan dengan seberapa sering itemset A muncul sendiri')
-            st.write('- Nilai confidence yang tinggi menunjukkan bahwa aturan asosiasi tersebut memiliki kecenderungan yang kuat untuk terjadi')
-            st.write('Lift')
-            st.write('- Lift merupakan ukuran kekuatan aturan asosiasi')
-            st.write('- Nilai lift lebih dari 1 menunjukkan bahwa itemset A dan itemset B muncul bersamaan lebih sering dari yang diharapkan secara acak, yang menunjukkan adanya korelasi positif antara keduanya')
-            st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
-            
-            # Menambahkan rekomendasi stok barang yang harus dibeli
-            recommended_products = set()
-            for antecedent in matrix['antecedents']:
-                recommended_products |= set(antecedent.split(', '))
-            recommended_products = list(recommended_products)
-            
-            
-            st.write("Rekomendasi stok barang yang harus dibeli:")
-            st.write(recommended_products)
-            
-            for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
-                st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
-                st.write('Support : {:.3f}'.format(supp))
-                st.write('Confidence : {:.3f}'.format(conf))
-                st.write('Lift : {:.3f}'.format(lift))
-                st.write('')
+        st.write('- Support merupakan perbandingan jumlah transaksi A dan B dengan total semua transaksi')
+        st.write('- Confidence merupakan perbandingan jumlah transaksi A dan B dengan total transaksi A')
+        st.write('- Lift merupakan ukuran kekuatan rules "Jika customer membeli A, maka membeli B"')
+        
+        # Menambahkan rekomendasi stok barang yang harus dibeli
+        recommended_products = set()
+        for antecedent in matrix['antecedents']:
+            recommended_products |= set(antecedent.split(', '))
+        recommended_products = list(recommended_products)
+        
+        
+        st.write("Rekomendasi stok barang yang harus dibeli:")
+        st.write(recommended_products)
+        
+        for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
+            st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
+            st.write('Support : {:.3f}'.format(supp))
+            st.write('Confidence : {:.3f}'.format(conf))
+            st.write('Lift : {:.3f}'.format(lift))
+            st.write('')
+
+# UI code for Streamlit
+def main():
+    st.title('Analisis Produk Terlaris dengan Association Rule Mining')
+    
+    # Load Data
+    st.sidebar.title('Data Settings')
+    uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
+    if uploaded_file is not None:
+        df = pd.read_csv(uploaded_file)
+    else:
+        st.stop()
+    
+    pembeli_column = st.sidebar.selectbox('Select column for Buyer', df.columns)
+    tanggal_column = st.sidebar.selectbox('Select column for Date', df.columns)
+    produk_column = st.sidebar.selectbox('Select column for Product', df.columns)
+    
+    # Data Summary
+    data_summary(df, pembeli_column, tanggal_column, produk_column)
+    
+    # Association Rule Mining
+    MBA(df, pembeli_column, produk_column)
+
+if __name__ == '__main__':
+    main()
