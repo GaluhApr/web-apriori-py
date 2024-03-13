@@ -132,7 +132,7 @@ def MBA(df, pembeli, produk):
         st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
         st.write('Contribution')
         st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
-        
+        st.write('-Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
         # Menambahkan rekomendasi stok barang yang harus dibeli berdasarkan kontribusi
         recommended_products = []
         recommended_products_contribution = {}
@@ -146,10 +146,10 @@ def MBA(df, pembeli, produk):
             recommended_products.extend(consequent_list)
         recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-        st.write("Rekomendasi stok barang yang harus dibeli beserta kontribusi (diurutkan berdasarkan kontribusi tertinggi):")
+        st.write("Rekomendasi stok barang yang harus dibeli :")
         recommended_products_sorted = sorted(recommended_products, key=lambda x: recommended_products_contribution[x], reverse=True)
-        for item in recommended_products_sorted:
-            st.write(f"{item}: {recommended_products_contribution[item]}")
+        for idx, item in enumerate(recommended_products_sorted, start=1):
+            st.write(f"{idx}. {item}: {recommended_products_contribution[item]}")
 
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
@@ -158,3 +158,4 @@ def MBA(df, pembeli, produk):
             st.write('Lift : {:.3f}'.format(lift))
             st.write('Contribution : {:.3f}'.format(supp * conf))
             st.write('')
+
