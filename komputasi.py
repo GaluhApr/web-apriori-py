@@ -151,35 +151,3 @@ def MBA(df, pembeli, produk):
                 st.write('Confidence : {:.3f}'.format(conf))
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('')
-
-def show_top_lift_products(matrix):
-    st.subheader('Barang dengan Lift Tertinggi')
-    st.write(matrix)
-
-def main():
-    st.title('Analisis Produk Terlaris dengan Association Rule Mining')
-    
-    # Load Data
-    st.sidebar.title('Data Settings')
-    uploaded_file = st.sidebar.file_uploader("Upload your input CSV file", type=["csv"])
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-    else:
-        st.stop()
-    
-    pembeli_column = st.sidebar.selectbox('Select column for Buyer', df.columns)
-    tanggal_column = st.sidebar.selectbox('Select column for Date', df.columns)
-    produk_column = st.sidebar.selectbox('Select column for Product', df.columns)
-    
-    # Data Summary
-    data_summary(df, pembeli_column, tanggal_column, produk_column)
-    
-    # Association Rule Mining
-    rules_df = MBA(df, pembeli_column, produk_column)
-    
-    if not rules_df.empty:
-        top_lift_products = rules_df.sort_values(by='lift', ascending=False).head()
-        show_top_lift_products(top_lift_products)
-
-if __name__ == '__main__':
-    main()
