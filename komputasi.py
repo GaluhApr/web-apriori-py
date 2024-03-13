@@ -43,7 +43,7 @@ def show_transaction_info(df, produk, pembeli):
         col1.info(f'Total produk     : {total_produk}')
         col2.info(f'Total transaksi  : {total_transaksi}')
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
-        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 5)
+        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 10)
         if sort == 'Terlaris':
             most_sold = df[produk].value_counts().head(jumlah)
         else:
@@ -115,8 +115,6 @@ def MBA(df, pembeli, produk):
             'lift':rules['lift'],
         }
         matrix = pd.DataFrame(matrix)
-        
-        # Tampilkan data secara langsung tanpa perlu menekan tombol
         st.write(matrix)
         
         st.write('Support')
@@ -132,8 +130,8 @@ def MBA(df, pembeli, produk):
         
         # Menambahkan rekomendasi stok barang yang harus dibeli
         recommended_products = set()
-        for antecedent in matrix['antecedents']:
-            recommended_products |= set(antecedent.split(', '))
+        for consequent in matrix['consequents']:
+            recommended_products |= set(consequent.split(', '))
         recommended_products = list(recommended_products)
         
         st.write("Rekomendasi stok barang yang harus dibeli:")
