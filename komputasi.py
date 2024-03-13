@@ -146,7 +146,7 @@ def MBA(df, pembeli, produk):
             recommended_products.extend(consequent_list)
         recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-        st.write("Rekomendasi stok barang yang harus dibeli :")
+        st.subheader("Rekomendasi stok barang yang harus dibeli (Contribution) :")
         recommended_products_sorted = sorted(recommended_products, key=lambda x: recommended_products_contribution[x], reverse=True)
         for idx, item in enumerate(recommended_products_sorted, start=1):
             st.write(f"{idx}. <font color='red'>{item}</font>: {recommended_products_contribution[item]}", unsafe_allow_html=True)
