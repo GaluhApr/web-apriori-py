@@ -51,14 +51,14 @@ def show_transaction_info(df, produk, pembeli):
             most_sold = most_sold.sort_values(ascending=True)
         if not most_sold.empty:
             c1, c2 = st.columns((2, 1))
-            most_sold.plot(kind='bar', ax=c1)
+            most_sold.plot(kind='bar')
             plt.title('Jumlah Produk Terjual')
-            c2.write(most_sold, height=len(most_sold)*0.6, width=400)  # Atur lebar tabel di sini
+            c1.pyplot(plt)
+            c2.write(most_sold, height=len(most_sold)*0.6, width=400)
         else:
             st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
-
 
 
 def data_summary(df, pembeli, tanggal, produk):
