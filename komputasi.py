@@ -65,7 +65,8 @@ def show_transaction_info(df, produk, pembeli):
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
     col1, col2 = st.columns(2)
-    sep = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash (-)'), ('/', 'Slash (/)')])
+    sep_options = [('-', 'Dash (&ndash;)'), ('/', 'Slash (/)')]
+    sep = col1.radio('Tentukan separator tanggal', options=sep_options, format_func=lambda x: x[1])
     dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
     try:
         df = prep_date(df, tanggal, sep, dateformat)
