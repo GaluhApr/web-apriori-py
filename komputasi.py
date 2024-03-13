@@ -77,7 +77,7 @@ def data_summary(df, pembeli, tanggal, produk):
     df_filtered = df.copy()  # Buat salinan dataset yang difilter untuk digunakan dalam MBA
     
     # Memilih tahun dan bulan
-    year_list = np.append(year_list, df['Tahun'].unique())
+    year_list = ['Semua']
     by_year = st.selectbox('Tahun ', options=year_list, key='selectbox_year')
     if by_year != 'Semua':
         df_filtered = df_filtered[df_filtered['Tahun'] == int(by_year)]
