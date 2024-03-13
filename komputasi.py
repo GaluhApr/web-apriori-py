@@ -116,9 +116,8 @@ def MBA(df, pembeli, produk):
             'contribution': rules['support'] * rules['confidence']
         }
         matrix = pd.DataFrame(matrix)
-        matrix = matrix.sort_values(by='contribution', ascending=False)  # Urutkan berdasarkan kontribusi
-
-        st.write(matrix)
+        matrix = matrix.sort_values(by=['contribution', 'lift'], ascending=False)  # Urutkan berdasarkan kontribusi dan lift terbesar
+        st.write(matrix) # Menampilkan seluruh hasil rule
         
         st.write('Support')
         st.write('- Support mengindikasikan seberapa sering itemset tertentu muncul dalam dataset transaksi')
@@ -133,7 +132,7 @@ def MBA(df, pembeli, produk):
         st.write('Contribution')
         st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
         st.write('- Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
-        # Menambahkan rekomendasi stok barang yang harus dibeli berdasarkan kontribusi
+        # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
         recommended_products = []
         recommended_products_contribution = {}
         for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
@@ -146,8 +145,8 @@ def MBA(df, pembeli, produk):
             recommended_products.extend(consequent_list)
         recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-        st.subheader("Rekomendasi stok barang yang harus dibeli (Contribution) :")
-        recommended_products_sorted = sorted(recommended_products, key=lambda x: recommended_products_contribution[x], reverse=True)
+        st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
+        recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
         for idx, item in enumerate(recommended_products_sorted, start=1):
             st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
@@ -158,6 +157,7 @@ def MBA(df, pembeli, produk):
             st.write('Lift : {:.3f}'.format(lift))
             st.write('Contribution : {:.3f}'.format(supp * conf))
             st.write('')
+
 
 
 
