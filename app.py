@@ -4,7 +4,7 @@ import streamlit as st
 from PIL import Image
 
 # Set judul dan ikon
-st.set_page_config(page_title="Apriori Toko Handari", page_icon="images/delivery-man.png")
+st.set_page_config(page_title="Apriori Toko Handari", page_icon="images/basket.png")
 
 # Menampilkan judul dan deskripsi
 st.title('Data Mining Apriori')
