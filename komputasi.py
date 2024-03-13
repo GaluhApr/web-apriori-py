@@ -130,13 +130,6 @@ def MBA(df, pembeli, produk):
                 recommended_products |= set(consequent.split(', '))
             recommended_products = list(recommended_products)
             
-            # Mendapatkan barang yang paling laris
-            most_sold = df[produk].value_counts().head(5).index.tolist()
-            
-            # Menggabungkan rekomendasi stok barang berdasarkan consequents dengan barang yang paling laris
-            recommended_products.extend(most_sold)
-            recommended_products = list(set(recommended_products))
-            
             st.write("Rekomendasi stok barang yang harus dibeli:")
             st.write(recommended_products)
             
@@ -146,3 +139,4 @@ def MBA(df, pembeli, produk):
                 st.write('Confidence : {:.3f}'.format(conf))
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('')
+
