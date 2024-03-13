@@ -79,10 +79,10 @@ def data_summary(df, pembeli, tanggal, produk):
     # Memilih tahun dan bulan
     year_list = ['Semua']
     year_list = np.append(year_list, df['Tahun'].unique())
-    by_year = st.selectbox('Tahun ', (year_list))
+    by_year = st.selectbox('Tahun ', options=year_list, key='selectbox_year')
     if by_year != 'Semua':
         df_filtered = df_filtered[df_filtered['Tahun'] == int(by_year)]
-        by_month = st.slider('Bulan', 1, 12, (1, 12))
+        by_month = st.slider('Bulan', 1, 12, (1, 12), key='slider_month')
         df_filtered = df_filtered[df_filtered['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both")]
     
     # Tampilkan tombol untuk memulai proses MBA setelah memilih tahun dan bulan
@@ -99,7 +99,7 @@ def prep_frozenset(rules):
     return temp
 
 def MBA(df, pembeli, produk):
-    if st.button('Mulai Analisis Asosiasi'):
+    if st.button('Mulai Analisis Asosiasi', key='button_mba'):
         st.header('Association Rule Mining Menggunakan Apriori')
         transaction_list = []
         for i in df[pembeli].unique():
