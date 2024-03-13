@@ -116,7 +116,6 @@ def MBA(df, pembeli, produk):
             'contribution': rules['support'] * rules['confidence']
         }
         matrix = pd.DataFrame(matrix)
-        matrix = matrix.sort_values(by=['contribution', 'lift'], ascending=False)  # Urutkan berdasarkan kontribusi dan lift terbesar
         st.write(matrix) # Menampilkan seluruh hasil rule
         
         st.write('Support')
