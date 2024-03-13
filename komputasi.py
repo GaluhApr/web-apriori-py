@@ -51,10 +51,10 @@ def show_transaction_info(df, produk, pembeli):
             most_sold = most_sold.sort_values(ascending=True)
         if not most_sold.empty:
             c1, c2 = st.columns((2, 1))
-            most_sold.plot(kind='bar')
+            most_sold.plot(kind='bar', ax=c1)
             plt.title('Jumlah Produk Terjual')
             c1.pyplot(plt)
-            c2.write(most_sold, height=len(most_sold)*0.6)
+            c2.write(most_sold, width=500)
         else:
             st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
     except Exception as e:
