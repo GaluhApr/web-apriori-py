@@ -74,7 +74,16 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
-    show_transaction_info(df, produk, pembeli)
+    
+    # Tambahkan tombol untuk mulai proses MBA
+    mba_done = False  # Inisialisasi variabel mba_done
+    if st.button('Mulai Analisis Asosiasi'):
+        mba_done = True
+    
+    # Jalankan proses MBA jika mba_done True
+    if mba_done:
+        show_transaction_info(df, produk, pembeli)
+    
     return df
 
 def prep_frozenset(rules):
