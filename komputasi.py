@@ -121,7 +121,7 @@ def MBA(df, pembeli, produk):
             st.button("Tutup")
             st.write(matrix)
         else:
-            n_rules = st.number_input('Tentukan jumlah rules yang diinginkan : ', 1, len(rules['antecedents']), 1)
+            n_rules = st.number_input('Tentukan jumlah rules yang ingin ditampilkan : ', 1, len(rules['antecedents']), 1)
             matrix = matrix.sort_values(['lift', 'confidence', 'support'], ascending=False).head(n_rules)
             
             st.write('Support')
