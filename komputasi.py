@@ -159,3 +159,5 @@ def MBA(df, pembeli, produk):
             st.write('Contribution : {:.3f}'.format(supp * conf))
             st.write('')
 
+
+
