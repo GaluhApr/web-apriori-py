@@ -128,22 +128,21 @@ def MBA(df, pembeli, produk):
         st.write('- Nilai lift lebih dari 1 menunjukkan bahwa itemset A dan itemset B muncul bersamaan lebih sering dari yang diharapkan secara acak, yang menunjukkan adanya korelasi positif antara keduanya')
         st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
         
-        # Menambahkan rekomendasi stok barang yang harus dibeli
+        # Menambahkan rekomendasi stok barang yang harus dibeli beserta jumlah penjualannya
         recommended_products = set()
         for consequent in matrix['consequents']:
             recommended_products |= set(consequent.split(', '))
         recommended_products = list(recommended_products)
-
+        
         # Hitung jumlah barang yang terjual untuk setiap barang yang direkomendasikan
         sold_counts = {}
         for product in recommended_products:
             sold_counts[product] = df[df[produk].str.contains(product)].shape[0]
 
         # Tampilkan rekomendasi stok barang beserta jumlah penjualan
-        st.write("Rekomendasi stok barang yang harus dibeli:")
+        st.write("Rekomendasi stok barang yang harus dibeli beserta jumlah penjualan:")
         for product in recommended_products:
             st.write(f"{product}: {sold_counts.get(product, 0)} terjual")
-
         
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
@@ -151,3 +150,4 @@ def MBA(df, pembeli, produk):
             st.write('Confidence : {:.3f}'.format(conf))
             st.write('Lift : {:.3f}'.format(lift))
             st.write('')
+
