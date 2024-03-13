@@ -8,6 +8,8 @@ import streamlit as st
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import association_rules, apriori
 
+is_data_ready = False  # Variabel boolean untuk menandai apakah data sudah siap
+
 def prep_date(df, tanggal, sep, dateformat):
     if dateformat == 'ddmmyy':
         df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
@@ -61,6 +63,7 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 def data_summary(df, pembeli, tanggal, produk):
+    global is_data_ready  # Gunakan variabel global
     st.header('Ringkasan Dataset')
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
@@ -68,13 +71,21 @@ def data_summary(df, pembeli, tanggal, produk):
     dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
     try:
         df = prep_date(df, tanggal, sep, dateformat)
-    except:
+    except ValueError:
         st.warning('Separator tanggal salah!')
-        st.stop()
+        return
+    
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
     show_transaction_info(df, produk, pembeli)
+    is_data_ready = True  # Setel is_data_ready ke True setelah langkah-langkah selesai
+    
+    # Tambahkan tombol untuk memulai perhitungan Apriori
+    if is_data_ready:
+        if st.button('Mulai Analisis Asosiasi'):
+            MBA(df, pembeli, produk)
+    
     return df
 
 def prep_frozenset(rules):
@@ -157,6 +168,9 @@ def MBA(df, pembeli, produk):
             st.write('Contribution : {:.3f}'.format(supp * conf))
             st.write('')
 
+# Contoh pemanggilan fungsi data_summary
+df = pd.read_csv('data_transaksi.csv')  # Ganti dengan nama file CSV Anda
+data_summary(df, 'pembeli', 'tanggal', 'produk')
 
 
 
