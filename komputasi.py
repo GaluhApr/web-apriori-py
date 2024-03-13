@@ -152,6 +152,10 @@ def MBA(df, pembeli, produk):
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('')
 
+def show_top_lift_products(matrix):
+    st.subheader('Barang dengan Lift Tertinggi')
+    st.write(matrix)
+
 def main():
     st.title('Analisis Produk Terlaris dengan Association Rule Mining')
     
@@ -171,7 +175,11 @@ def main():
     data_summary(df, pembeli_column, tanggal_column, produk_column)
     
     # Association Rule Mining
-    MBA(df, pembeli_column, produk_column)
+    rules_df = MBA(df, pembeli_column, produk_column)
+    
+    if not rules_df.empty:
+        top_lift_products = rules_df.sort_values(by='lift', ascending=False).head()
+        show_top_lift_products(top_lift_products)
 
 if __name__ == '__main__':
     main()
