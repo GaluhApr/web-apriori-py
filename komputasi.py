@@ -149,7 +149,7 @@ def MBA(df, pembeli, produk):
         st.write("Rekomendasi stok barang yang harus dibeli :")
         recommended_products_sorted = sorted(recommended_products, key=lambda x: recommended_products_contribution[x], reverse=True)
         for idx, item in enumerate(recommended_products_sorted, start=1):
-            st.write(f"{idx}. <font color='blue'>{item}: {recommended_products_contribution[item]}</font>", unsafe_allow_html=True)
+            st.write(f"{idx}. <font color='orange'>{item}</font>: {recommended_products_contribution[item]}", unsafe_allow_html=True)
 
         for a, c, supp, conf, lift in zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']):
             st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
