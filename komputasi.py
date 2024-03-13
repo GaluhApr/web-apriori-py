@@ -84,7 +84,7 @@ def prep_frozenset(rules):
 
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
-    if st.button("Mulai Perhitungan MBA"):
+    if st.button("Mulai Perhitungan Asosiasi"):
         transaction_list = []
         for i in df[pembeli].unique():
             tlist = list(set(df[df[pembeli]==i][produk]))
