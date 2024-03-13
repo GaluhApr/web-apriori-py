@@ -3,6 +3,9 @@ import pandas as pd
 import streamlit as st
 from PIL import Image
 
+# Set judul dan ikon
+st.set_page_config(page_title="Judul Baru", page_icon="images/delivery-man.png")
+
 # Menampilkan judul dan deskripsi
 st.title('Data Mining Apriori')
 st.write('OPTIMASI STOK BARANG DENGAN ANALISIS PENJUALAN MENGGUNAKAN METODE ASSOCIATION RULE MINING DI TOKO HANDARI')
