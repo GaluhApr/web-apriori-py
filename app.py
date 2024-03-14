@@ -32,12 +32,17 @@ except Exception as e:
 
 # Mendapatkan nama kolom
 if df is not None and not df.empty:
-    pembeli, tanggal, produk = df.columns[0], df.columns[1], df.columns[2]
+    try:
+        pembeli, tanggal, produk = df.columns[0], df.columns[1], df.columns[2]
 
-    # Memanggil fungsi untuk prapemrosesan data
-    df = komputasi.data_summary(df, pembeli, tanggal, produk)
+        # Memanggil fungsi untuk prapemrosesan data
+        df = komputasi.data_summary(df, pembeli, tanggal, produk)
 
-    # Memanggil fungsi untuk melakukan Association Rule Mining menggunakan Apriori
-    komputasi.MBA(df, pembeli, produk)
+        # Memanggil fungsi untuk melakukan Association Rule Mining menggunakan Apriori
+        komputasi.MBA(df, pembeli, produk)
+    except IndexError:
+        st.warning("Indeks di luar batas. Periksa bahwa dataset memiliki setidaknya tiga kolom.")
+    except ValueError:
+        st.warning("Terjadi kesalahan saat prapemrosesan data. Pastikan format data yang sesuai.")
 else:
     st.warning("Dataset kosong atau tidak valid. Mohon unggah dataset yang valid.")
