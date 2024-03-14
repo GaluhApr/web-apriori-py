@@ -14,9 +14,4 @@ Proyek ini merupakan bagian dari skripsi yang bertujuan untuk mengoptimalkan sto
 - Python 3.9
 - Libraries: Pandas, Streamlit, PIL (Pillow), Seaborn, Matplotlib, Re, Mlxtend, Datetime
 
-## Cara Penggunaan
-1. Clone repositori ini ke dalam sistem lokal Anda.
-2. Pastikan persyaratan sistem terpenuhi dan semua dependencies terinstall.
-3. Jalankan aplikasi dengan menjalankan perintah `streamlit run app.py` di terminal.
-4. Unggah dataset transaksi penjualan melalui antarmuka pengguna.
-5. Ikuti instruksi yang ditampilkan untuk menganalisis dan mengoptimalkan stok barang.
+
