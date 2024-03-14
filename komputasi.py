@@ -68,14 +68,18 @@ def data_summary(df, pembeli, tanggal, produk):
     dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
     try:
         df = prep_date(df, tanggal, sep, dateformat)
-    except:
-        st.warning('Separator tanggal salah!')
+    except ValueError:
+        st.warning('Format tanggal tidak sesuai! Silakan cek kembali dan pastikan format yang benar.')
+        st.stop()
+    except IndexError:
+        st.warning('Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
     show_transaction_info(df, produk, pembeli)
     return df
+
 
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
