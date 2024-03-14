@@ -121,6 +121,7 @@ def MBA(df, pembeli, produk):
                 'contribution': rules['support'] * rules['confidence']
             }
             matrix = pd.DataFrame(matrix)
+            matrix.reset_index(drop=True, inplace=True)
             st.write(matrix) # Menampilkan seluruh hasil rule
             
             st.write('Support')
