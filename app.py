@@ -17,6 +17,7 @@ st.image(image)
 # Memuat dataset
 df = None
 dataset_file = st.file_uploader("Upload Dataset Anda", type=['csv'])
+st.write('Contoh format dataset : https://www.kaggle.com/datasets/heeraldedhia/groceries-dataset?datasetId=877335&sortBy=voteCount')
 
 # Menangani kesalahan saat memuat dataset
 if dataset_file is None:
