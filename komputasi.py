@@ -65,7 +65,7 @@ def data_summary(df, pembeli, tanggal, produk):
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
-    dateformat = col2.radio('Tentukan format tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
+    dateformat = col2.radio('Tentukan format urutan tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
     try:
         df = prep_date(df, tanggal, sep, dateformat)
     except ValueError:
@@ -80,7 +80,6 @@ def data_summary(df, pembeli, tanggal, produk):
     show_transaction_info(df, produk, pembeli)
     return df
 
-
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
     temp = re.sub(r'}\)', '', temp)
@@ -94,7 +93,6 @@ def MBA(df, pembeli, produk):
             tlist = list(set(df[df[pembeli]==i][produk]))
             if len(tlist)>0:
                 transaction_list.append(tlist)
-
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
@@ -138,6 +136,7 @@ def MBA(df, pembeli, produk):
             st.write('Contribution')
             st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
             st.write('- Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
+           
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
             recommended_products_contribution = {}
