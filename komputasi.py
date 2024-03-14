@@ -106,7 +106,7 @@ def MBA(df, pembeli, produk):
             st.stop()
 
         st.subheader('Hasil Rules')
-
+        st.write('Total rules yang dihasilkan :', len(rules))
         if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
             st.write("Tidak ada aturan yang dihasilkan.")
         else:
