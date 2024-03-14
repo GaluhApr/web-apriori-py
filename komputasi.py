@@ -122,6 +122,7 @@ def MBA(df, pembeli, produk):
             }
             matrix = pd.DataFrame(matrix)
             matrix.reset_index(drop=True, inplace=True)
+            matrix.index += 1 
             st.write(matrix) # Menampilkan seluruh hasil rule
             
             st.write('Support')
