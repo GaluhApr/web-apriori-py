@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import streamlit as st
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import association_rules, apriori
+from sklearn.preprocessing import MinMaxScaler
 
 def prep_date(df, tanggal, sep, dateformat):
     if dateformat == 'ddmmyy':
@@ -21,6 +22,16 @@ def prep_date(df, tanggal, sep, dateformat):
         df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[2]))
         df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[1]))
         df['Tahun'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
+    return df
+
+def normalize_data(df):
+    scaler = MinMaxScaler()
+    df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
+    return df
+
+def preprocess_data(df, tanggal, sep, dateformat):
+    df = prep_date(df, tanggal, sep, dateformat)
+    df = normalize_data(df)
     return df
 
 def dataset_settings(df, pembeli, tanggal, produk):
