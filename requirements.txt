@@ -5,4 +5,4 @@ pandas
 Pillow
 seaborn
 streamlit
-sklearn
+scikit-learn
