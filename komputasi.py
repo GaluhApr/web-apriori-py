@@ -151,27 +151,29 @@ def MBA(df, pembeli, produk):
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
             recommended_products_contribution = {}
-            recommended_products_count = 0  # Menghitung jumlah barang yang direkomendasikan
             for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
                 consequent_list = consequent.split(', ')
                 for item in consequent_list:
-                    if recommended_products_count < jumlah:  # Hanya tambahkan jika belum mencapai jumlah yang ditentukan
-                        if item not in recommended_products_contribution:
-                            recommended_products_contribution[item] = contribution
-                        else:
-                            recommended_products_contribution[item] += contribution
-                        recommended_products.append(item)
-                        recommended_products_count += 1
+                    if item not in recommended_products_contribution:
+                        recommended_products_contribution[item] = contribution
                     else:
-                        break  # Keluar dari loop jika sudah mencapai jumlah yang ditentukan
-            recommended_products = list(set(recommended_products))  # Hapus duplikat
+                        recommended_products_contribution[item] += contribution
+                    recommended_products.extend(consequent_list)
 
-            # Menampilkan jumlah barang yang sama dengan most_sold
+            # Menghitung jumlah barang yang sama seperti most_sold
+            recommended_products_counts = pd.Series(recommended_products).value_counts()
+
+            # Memilih jumlah barang yang sama dengan jumlah yang dihasilkan pada most_sold
+            jumlah = min(jumlah, len(recommended_products_counts))
+
+            # Memilih `jumlah` barang teratas berdasarkan jumlah yang dihitung
+            recommended_products_top = recommended_products_counts.head(jumlah)
+
+            # Menampilkan rekomendasi stok barang untuk dibeli (contribution)
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            for idx, item in enumerate(most_sold.index, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({most_sold[item]})", unsafe_allow_html=True)
+            for idx, (item, count) in enumerate(recommended_products_top.items(), start=1):
+                st.write(f"{idx}. <font color='red'>{item}</font> ({count})", unsafe_allow_html=True)
 
-                
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
