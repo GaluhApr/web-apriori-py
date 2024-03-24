@@ -158,13 +158,23 @@ def MBA(df, pembeli, produk):
                         recommended_products_contribution[item] = contribution
                     else:
                         recommended_products_contribution[item] += contribution
-                recommended_products.extend(consequent_list)
-            recommended_products = list(set(recommended_products))  # Hapus duplikat
+                    recommended_products.extend(consequent_list)
 
+            # Menghitung jumlah barang yang terjual sesuai dengan bulan dan tahun yang sudah ditentukan sebelumnya
+            barang_terjual_per_bulan = df.groupby(['Bulan', 'Tahun', produk])[produk].count()
+
+            # Membuat dataframe untuk menyimpan jumlah barang yang terjual dan menggabungkannya dengan rekomendasi barang
+            recommended_with_sales = pd.DataFrame(recommended_products_contribution.items(), columns=['Produk', 'Kontribusi'])
+            recommended_with_sales['Jumlah Terjual'] = 0  # Inisialisasi jumlah terjual dengan 0
+            for index, row in recommended_with_sales.iterrows():
+                if (row['Bulan'], row['Tahun'], row['Produk']) in barang_terjual_per_bulan.index:
+                    recommended_with_sales.at[index, 'Jumlah Terjual'] = barang_terjual_per_bulan.loc[(row['Bulan'], row['Tahun'], row['Produk'])]
+
+            # Mengurutkan berdasarkan kontribusi dan menampilkan rekomendasi stok barang untuk dibeli
+            recommended_with_sales_sorted = recommended_with_sales.sort_values(by='Kontribusi', ascending=False)
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
-            for idx, item in enumerate(recommended_products_sorted, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
+            for idx, row in recommended_with_sales_sorted.iterrows():
+                st.write(f"{idx + 1}. <font color='red'>{row['Produk']}</font> (Kontribusi: {row['Kontribusi']}, Jumlah Terjual: {row['Jumlah Terjual']})", unsafe_allow_html=True)
 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
