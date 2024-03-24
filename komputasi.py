@@ -71,13 +71,6 @@ def show_transaction_info(df, produk, pembeli):
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
-def count_sales(df, product_column, recommended_products):
-    sales_counts = {}
-    for product in recommended_products:
-        count = df[df[product_column] == product].shape[0]
-        sales_counts[product] = count
-    return sales_counts
-
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
     col1, col2 = st.columns(2)
@@ -88,7 +81,7 @@ def data_summary(df, pembeli, tanggal, produk):
         df = prep_date(df, tanggal, sep, dateformat)
     except ValueError:
         st.warning('Format tanggal tidak sesuai! Silakan cek kembali dan pastikan format yang benar.')
-        st.stop()    
+        st.stop()
     except IndexError:
         st.warning('Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
@@ -170,13 +163,12 @@ def MBA(df, pembeli, produk):
 
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
             recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            df_filtered = dataset_settings(df, pembeli, 'Tanggal', produk)  # Terapkan filter
+            sales_counts = count_sales(df_filtered, produk, recommended_products_sorted)
             for idx, item in enumerate(recommended_products_sorted, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
-
-            st.subheader("Jumlah Penjualan untuk Setiap Rekomendasi Barang:")
-            sales_counts = count_sales(df, produk, recommended_products_sorted)
-            for idx, (item, count) in enumerate(sales_counts.items(), start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> : {count} penjualan", unsafe_allow_html=True)
+                contribution = recommended_products_contribution[item]
+                count = sales_counts[item] if item in sales_counts else 0  # Cek jumlah penjualan
+                st.write(f"{idx}. <font color='red'>{item}</font> ({contribution}) ({count}pcs)", unsafe_allow_html=True)
                         
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
@@ -185,3 +177,5 @@ def MBA(df, pembeli, produk):
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
+
+                
