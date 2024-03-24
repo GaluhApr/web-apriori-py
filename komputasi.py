@@ -96,17 +96,6 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
-def count_sales(df, product_column, recommended_products):
-    sales_count = {}
-    for product in recommended_products:
-        sales_count[product] = df[df[product_column] == product].shape[0]
-    return sales_count
-
-st.subheader("Jumlah Penjualan untuk Setiap Rekomendasi Barang:")
-sales_counts = count_sales(df, produk, recommended_products_sorted)
-for idx, (item, count) in enumerate(sales_counts.items(), start=1):
-    st.write(f"{idx}. <font color='red'>{item}</font> : {count} penjualan", unsafe_allow_html=True)
-
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
