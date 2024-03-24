@@ -102,6 +102,11 @@ def count_sales(df, product_column, recommended_products):
         sales_count[product] = df[df[product_column] == product].shape[0]
     return sales_count
 
+st.subheader("Jumlah Penjualan untuk Setiap Rekomendasi Barang:")
+sales_counts = count_sales(df, produk, recommended_products_sorted)
+for idx, (item, count) in enumerate(sales_counts.items(), start=1):
+    st.write(f"{idx}. <font color='red'>{item}</font> : {count} penjualan", unsafe_allow_html=True)
+
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
@@ -172,11 +177,6 @@ def MBA(df, pembeli, produk):
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
-            st.subheader("Jumlah Penjualan untuk Setiap Rekomendasi Barang:")
-            sales_counts = count_sales(df, produk, recommended_products_sorted)
-            for idx, (item, count) in enumerate(sales_counts.items(), start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> : {count} penjualan", unsafe_allow_html=True)
-                        
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
@@ -184,3 +184,5 @@ def MBA(df, pembeli, produk):
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
+                
+                
