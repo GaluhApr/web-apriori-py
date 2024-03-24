@@ -96,7 +96,7 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
-def MBA(df, pembeli, produk):
+def MBA(df, pembeli, produk, tanggal_tertentu):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
         transaction_list = []
@@ -147,24 +147,32 @@ def MBA(df, pembeli, produk):
             st.write('Contribution')
             st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
             st.write('- Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
-        
-            # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
+           
+            # Menghitung jumlah barang yang terjual pada tanggal tertentu
+            sales_on_date = df[df['Tanggal'] == tanggal_tertentu][produk].value_counts()
+
+            # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan jumlah barang yang terjual pada tanggal tertentu
             recommended_products = []
-            recommended_products_contribution = {}
             recommended_products_count = {}
-            for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
+            for consequent in matrix['consequents']:
                 consequent_list = consequent.split(', ')
                 for item in consequent_list:
-                    if item not in recommended_products_contribution:
-                        recommended_products_contribution[item] = contribution
-                        recommended_products_count[item] = 1
-                    else:
-                        recommended_products_contribution[item] += contribution
-                        recommended_products_count[item] += 1
-                recommended_products.extend(consequent_list)
+                    if item in sales_on_date:
+                        if item not in recommended_products_count:
+                            recommended_products_count[item] = sales_on_date[item]
+                        else:
+                            recommended_products_count[item] += sales_on_date[item]
+                        recommended_products.append(item)
             recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-            st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
-            for idx, item in enumerate(recommended_products_sorted, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_count[item]} pcs, Contribution: {recommended_products_contribution[item]})", unsafe_allow_html=True)
+            st.subheader("Rekomendasi stok barang untuk dibeli (berdasarkan jumlah barang yang terjual pada tanggal tertentu):")
+            for idx, item in enumerate(recommended_products, start=1):
+                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_count[item]} pcs)", unsafe_allow_html=True)
+
+            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+                st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
+                st.write('Support : {:.3f}'.format(supp))
+                st.write('Confidence : {:.3f}'.format(conf))
+                st.write('Lift : {:.3f}'.format(lift))
+                st.write('Contribution : {:.3f}'.format(supp * conf))
+                st.write('')
