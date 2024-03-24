@@ -158,21 +158,13 @@ def MBA(df, pembeli, produk):
                         recommended_products_contribution[item] = contribution
                     else:
                         recommended_products_contribution[item] += contribution
-                    recommended_products.extend(consequent_list)
+                recommended_products.extend(consequent_list)
+            recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-            # Menghitung jumlah barang yang sama seperti most_sold
-            recommended_products_counts = pd.Series(recommended_products).value_counts()
-
-            # Memilih jumlah barang yang sama dengan jumlah yang dihasilkan pada most_sold
-            jumlah = min(jumlah, len(recommended_products_counts))
-
-            # Memilih `jumlah` barang teratas berdasarkan jumlah yang dihitung
-            recommended_products_top = recommended_products_counts.head(jumlah)
-
-            # Menampilkan rekomendasi stok barang untuk dibeli (contribution)
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            for idx, (item, count) in enumerate(recommended_products_top.items(), start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({count})", unsafe_allow_html=True)
+            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            for idx, item in enumerate(recommended_products_sorted, start=1):
+                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
