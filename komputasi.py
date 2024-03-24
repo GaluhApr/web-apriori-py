@@ -151,21 +151,26 @@ def MBA(df, pembeli, produk):
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
             recommended_products_contribution = {}
+            recommended_products_count = 0  # Menghitung jumlah barang yang direkomendasikan
             for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
                 consequent_list = consequent.split(', ')
                 for item in consequent_list:
-                    if item not in recommended_products_contribution:
-                        recommended_products_contribution[item] = contribution
+                    if recommended_products_count < jumlah:  # Hanya tambahkan jika belum mencapai jumlah yang ditentukan
+                        if item not in recommended_products_contribution:
+                            recommended_products_contribution[item] = contribution
+                        else:
+                            recommended_products_contribution[item] += contribution
+                        recommended_products.append(item)
+                        recommended_products_count += 1
                     else:
-                        recommended_products_contribution[item] += contribution
-                recommended_products.extend(consequent_list)
+                        break  # Keluar dari loop jika sudah mencapai jumlah yang ditentukan
             recommended_products = list(set(recommended_products))  # Hapus duplikat
 
+            # Menampilkan jumlah barang yang sama dengan most_sold
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
-            for idx, item in enumerate(recommended_products_sorted, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
-                st.write(most_sold)
+            for idx, item in enumerate(most_sold.index, start=1):
+                st.write(f"{idx}. <font color='red'>{item}</font> ({most_sold[item]})", unsafe_allow_html=True)
+
                 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
