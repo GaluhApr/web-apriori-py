@@ -96,11 +96,14 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
-def MBA(df, pembeli, produk, tanggal_tertentu):
+def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
-        # 1. Filter DataFrame berdasarkan tanggal yang ditentukan
-        df_filtered = df[df['Tanggal'] == tanggal_tertentu]
+        # Ambil tanggal yang dipilih dari dataset settings
+        selected_date = st.session_state.selected_date
+
+        # Filter DataFrame berdasarkan tanggal yang dipilih
+        df_filtered = df[(df['Tahun'] == selected_date.year) & (df['Bulan'] == selected_date.month)]
 
         transaction_list = []
         for i in df_filtered[pembeli].unique():
@@ -171,7 +174,9 @@ def MBA(df, pembeli, produk, tanggal_tertentu):
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
             recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
             for idx, item in enumerate(recommended_products_sorted, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
+                # Ambil jumlah barang yang terjual untuk item yang direkomendasikan
+                count = sold_count.get(item, 0)
+                st.write(f"{idx}. <font color='red'>{item}</font> ({count})", unsafe_allow_html=True)
 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
