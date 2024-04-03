@@ -115,6 +115,80 @@ def MBA(df, pembeli, produk):
         frequent_itemsets = apriori(df2, min_support=0.005, use_colnames=True)   #nilai support yang digunakan
         try:
             rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5, support_only=False, confidence_only=True, min_confidence=0.7) 
+            # Anda bisa mengganti nilai min_confidence sesuai kebutuhan Anda
+        except ValueError as e:
+            st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
+            st.stop()
+
+        end_time = time.time()  # Catat waktu selesai
+        processing_time = end_time - start_time  # Hitung waktu pemrosesan
+
+        st.subheader('Hasil Rules')
+        st.write('Total rules yang dihasilkan :', len(rules))
+        st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
+
+        if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
+            st.write("Tidak ada aturan yang dihasilkan.")
+        else:
+            antecedents = rules['antecedents'].apply(prep_frozenset)
+            consequents = rules['consequents'].apply(prep_frozenset)
+            matrix = {
+                'antecedents': antecedents,
+                'consequents': consequents,
+                'support': rules['support'],
+                'confidence': rules['confidence'],
+                'lift': rules['lift'],
+                'contribution': rules['support'] * rules['confidence']
+            }
+            matrix = pd.DataFrame(matrix)
+            matrix.reset_index(drop=True, inplace=True)
+            matrix.index += 1 
+            st.write(matrix) # Menampilkan seluruh hasil rule
+
+            # Informasi tambahan tentang support, confidence, lift, dan contribution
+
+            # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
+            recommended_products = []
+            recommended_products_contribution = {}
+            for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
+                consequent_list = consequent.split(', ')
+                for item in consequent_list:
+                    if item not in recommended_products_contribution:
+                        recommended_products_contribution[item] = contribution
+                    else:
+                        recommended_products_contribution[item] += contribution
+                recommended_products.extend(consequent_list)
+            recommended_products = list(set(recommended_products))  # Hapus duplikat
+
+            st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
+            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            for idx, item in enumerate(recommended_products_sorted, start=1):
+                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
+
+            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+                st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
+                st.write('Support : {:.3f}'.format(supp))
+                st.write('Confidence : {:.3f}'.format(conf))
+                st.write('Lift : {:.3f}'.format(lift))
+                st.write('Contribution : {:.3f}'.format(supp * conf))
+                st.write('')
+def MBA(df, pembeli, produk):
+    st.header('Association Rule Mining Menggunakan Apriori')
+    if st.button("Mulai Perhitungan Asosiasi"):
+        start_time = time.time()  # Catat waktu mulai
+
+        transaction_list = []
+        for i in df[pembeli].unique():
+            tlist = list(set(df[df[pembeli]==i][produk]))
+            if len(tlist)>0:
+                transaction_list.append(tlist)
+        te = TransactionEncoder()
+        te_ary = te.fit(transaction_list).transform(transaction_list)
+        df2 = pd.DataFrame(te_ary, columns=te.columns_)
+        frequent_itemsets = apriori(df2, min_support=0.005, use_colnames=True)   #nilai support yang digunakan
+        try:
+            rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5, support_only=False, confidence_only=True, min_confidence=0.7) 
+            # Anda bisa mengganti nilai min_confidence sesuai kebutuhan Anda
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
             st.stop()
