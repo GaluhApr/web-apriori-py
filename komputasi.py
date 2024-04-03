@@ -176,7 +176,7 @@ def MBA(df, pembeli, produk):
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
-        start_time = time.time()  # Catat waktu mulai
+        start_time = time.time()  
 
         transaction_list = []
         for i in df[pembeli].unique():
@@ -186,16 +186,16 @@ def MBA(df, pembeli, produk):
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
-        frequent_itemsets = apriori(df2, min_support=0.006, use_colnames=True)   #nilai support yang digunakan
+        frequent_itemsets = apriori(df2, min_support=0.005, use_colnames=True)   #nilai support yang digunakan
         try:
-            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.09) 
+            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.05) 
             # Ganti min_threshold sesuai dengan nilai confidence yang diinginkan
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
             st.stop()
 
-        end_time = time.time()  # Catat waktu selesai
-        processing_time = end_time - start_time  # Hitung waktu pemrosesan
+        end_time = time.time()  
+        processing_time = end_time - start_time  
 
         st.subheader('Hasil Rules')
         st.write('Total rules yang dihasilkan :', len(rules))
