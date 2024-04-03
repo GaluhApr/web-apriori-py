@@ -114,7 +114,7 @@ def MBA(df, pembeli, produk):
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
         frequent_itemsets = apriori(df2, min_support=0.005, use_colnames=True)   #nilai support yang digunakan
         try:
-            rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.1) #nilai confidence yang digunakan
+            rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.2) #nilai confidence yang digunakan
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
             st.stop()
@@ -143,9 +143,6 @@ def MBA(df, pembeli, produk):
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1 
             st.write(matrix) # Menampilkan seluruh hasil rule
-            
-            # Menampilkan informasi waktu pemrosesan
-            st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
 
             # Informasi tambahan tentang support, confidence, lift, dan contribution
 
