@@ -5,6 +5,7 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
+import time
 from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import association_rules, apriori
 from sklearn.preprocessing import MinMaxScaler
@@ -96,9 +97,13 @@ def prep_frozenset(rules):
     temp = re.sub(r'}\)', '', temp)
     return temp
 
+import time
+
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
+        start_time = time.time()  # Catat waktu mulai
+
         transaction_list = []
         for i in df[pembeli].unique():
             tlist = list(set(df[df[pembeli]==i][produk]))
@@ -114,8 +119,13 @@ def MBA(df, pembeli, produk):
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
             st.stop()
 
+        end_time = time.time()  # Catat waktu selesai
+        processing_time = end_time - start_time  # Hitung waktu pemrosesan
+
         st.subheader('Hasil Rules')
         st.write('Total rules yang dihasilkan :', len(rules))
+        st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
+
         if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
             st.write("Tidak ada aturan yang dihasilkan.")
         else:
@@ -134,20 +144,11 @@ def MBA(df, pembeli, produk):
             matrix.index += 1 
             st.write(matrix) # Menampilkan seluruh hasil rule
             
-            st.write('Support')
-            st.write('- Support mengindikasikan seberapa sering itemset tertentu muncul dalam dataset transaksi')
-            st.write('- Semakin tinggi nilai support, semakin sering itemset tersebut muncul dalam transaksi, yang menunjukkan bahwa itemset tersebut relatif populer atau sering dibeli bersama')
-            st.write('Confidence')
-            st.write('- confidence mengindikasikan seberapa sering itemset A dan itemset B muncul bersamaan dalam transaksi, dibandingkan dengan seberapa sering itemset A muncul sendiri')
-            st.write('- Nilai confidence yang tinggi menunjukkan bahwa aturan asosiasi tersebut memiliki kecenderungan yang kuat untuk terjadi')
-            st.write('Lift')
-            st.write('- Lift merupakan ukuran kekuatan aturan asosiasi')
-            st.write('- Nilai lift lebih dari 1 menunjukkan bahwa itemset A dan itemset B muncul bersamaan lebih sering dari yang diharapkan secara acak, yang menunjukkan adanya korelasi positif antara keduanya')
-            st.write('- Lift 1 menunjukkan bahwa tidak ada korelasi antara itemset A dan itemset B. Lift lebih kecil dari 1 menunjukkan adanya korelasi negatif antara keduanya')
-            st.write('Contribution')
-            st.write('- Kontribusi aturan menunjukkan seberapa besar aturan tersebut berkontribusi terhadap rekomendasi stok barang')
-            st.write('- Semakin tinggi kontribusi semakin penting aturan tersebut dalam pembentukan rekomendasi.')
-        
+            # Menampilkan informasi waktu pemrosesan
+            st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
+
+            # Informasi tambahan tentang support, confidence, lift, dan contribution
+
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
             recommended_products_contribution = {}
