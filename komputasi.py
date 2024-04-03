@@ -188,7 +188,7 @@ def MBA(df, pembeli, produk):
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
         frequent_itemsets = apriori(df2, min_support=0.006, use_colnames=True)   #nilai support yang digunakan
         try:
-            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.01) 
+            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.09) 
             # Ganti min_threshold sesuai dengan nilai confidence yang diinginkan
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
