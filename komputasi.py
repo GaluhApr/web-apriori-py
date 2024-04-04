@@ -112,7 +112,7 @@ def MBA(df, pembeli, produk):
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
-        frequent_itemsets = apriori(df2, min_support=0.005, use_colnames=True)   #nilai support yang digunakan
+        frequent_itemsets = apriori(df2, min_support=0.05, use_colnames=True)   #nilai support yang digunakan
         try:
             rules = association_rules(frequent_itemsets, metric='lift', min_threshold=0.5, support_only=False, confidence_only=True, min_confidence=0.7) 
             # Anda bisa mengganti nilai min_confidence sesuai kebutuhan Anda
