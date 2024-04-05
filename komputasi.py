@@ -173,10 +173,11 @@ def MBA(df, pembeli, produk):
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
                 
+
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
-        start_time = time.time()  # Catat waktu mulai
+        start_time = time.time()  
 
         transaction_list = []
         for i in df[pembeli].unique():
@@ -186,65 +187,64 @@ def MBA(df, pembeli, produk):
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
-        frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)
+        frequent_itemsets = apriori(df2, min_support=0.05, use_colnames=True)   #nilai support yang digunakan
         try:
-            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.1)
+            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.1) 
+            # Ganti min_threshold sesuai dengan nilai confidence yang diinginkan
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
             st.stop()
 
-        end_time = time.time()  # Catat waktu selesai
-        processing_time = end_time - start_time  # Hitung waktu pemrosesan
+        end_time = time.time()  
+        processing_time = end_time - start_time  
 
         st.subheader('Hasil Rules')
         st.write('Total rules yang dihasilkan :', len(rules))
         st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
 
-        if len(rules) == 0:
+        if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
             st.write("Tidak ada aturan yang dihasilkan.")
         else:
-            # Memperoleh statistik umum dari aturan asosiasi
-            rules['contribution'] = rules['support'] * rules['confidence']
-            rules['antecedent_len'] = rules['antecedents'].apply(lambda x: len(x))
-            rules['consequent_len'] = rules['consequents'].apply(lambda x: len(x))
+            antecedents = rules['antecedents'].apply(prep_frozenset)
+            consequents = rules['consequents'].apply(prep_frozenset)
+            matrix = {
+                'antecedents': antecedents,
+                'consequents': consequents,
+                'support': rules['support'],
+                'confidence': rules['confidence'],
+                'lift': rules['lift'],
+                'contribution': rules['support'] * rules['confidence']
+            }
+            matrix = pd.DataFrame(matrix)
+            matrix.reset_index(drop=True, inplace=True)
+            matrix.index += 1 
+            st.write(matrix) # Menampilkan seluruh hasil rule
 
-            # Menambahkan rekomendasi stok barang berdasarkan statistik dan kontribusi
-            recommended_products = {}
-            for idx, row in rules.iterrows():
-                for item in row['antecedents']:
-                    if item not in recommended_products:
-                        recommended_products[item] = {
-                            'total_confidence': row['confidence'],
-                            'total_contribution': row['contribution']
-                        }
+            # Informasi tambahan tentang support, confidence, lift, dan contribution
+
+            # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
+            recommended_products = []
+            recommended_products_contribution = {}
+            for antecedent, contribution in zip(matrix['antecedents'], matrix['contribution']):
+                antecedent_list = antecedent.split(', ')
+                for item in antecedent_list:
+                    if item not in recommended_products_contribution:
+                        recommended_products_contribution[item] = contribution
                     else:
-                        recommended_products[item]['total_confidence'] += row['confidence']
-                        recommended_products[item]['total_contribution'] += row['contribution']
+                        recommended_products_contribution[item] += contribution
+                recommended_products.extend(antecedent_list)
+            recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-                for item in row['consequents']:
-                    if item not in recommended_products:
-                        recommended_products[item] = {
-                            'total_confidence': row['confidence'],
-                            'total_contribution': row['contribution']
-                        }
-                    else:
-                        recommended_products[item]['total_confidence'] += row['confidence']
-                        recommended_products[item]['total_contribution'] += row['contribution']
 
-            # Mengurutkan rekomendasi stok barang berdasarkan kontribusi
-            recommended_products = sorted(recommended_products.items(), key=lambda x: x[1]['total_contribution'], reverse=True)
+            st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
+            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            for idx, item in enumerate(recommended_products_sorted, start=1):
+                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
-            # Menampilkan rekomendasi stok barang
-            st.subheader("Rekomendasi stok barang untuk dibeli (berdasarkan kontribusi):")
-            for idx, (item, stats) in enumerate(recommended_products, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> (Total Kontribusi: {stats['total_contribution']:.3f})", unsafe_allow_html=True)
-
-            # Menampilkan aturan asosiasi untuk informasi tambahan
-            st.subheader('Informasi Aturan Asosiasi:')
-            for idx, row in rules.iterrows():
-                st.info(f'Jika customer membeli {list(row["antecedents"])}, maka ia kemungkinan besar akan membeli {list(row["consequents"])}')
-                st.write('Support : {:.3f}'.format(row['support']))
-                st.write('Confidence : {:.3f}'.format(row['confidence']))
-                st.write('Lift : {:.3f}'.format(row['lift']))
-                st.write('Contribution : {:.3f}'.format(row['contribution']))
+            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+                st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
+                st.write('Support : {:.3f}'.format(supp))
+                st.write('Confidence : {:.3f}'.format(conf))
+                st.write('Lift : {:.3f}'.format(lift))
+                st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
