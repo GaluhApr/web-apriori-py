@@ -173,7 +173,6 @@ def MBA(df, pembeli, produk):
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
                 
-
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
@@ -181,7 +180,7 @@ def MBA(df, pembeli, produk):
 
         transaction_list = []
         for i in df[pembeli].unique():
-            tlist = list(set(df[df[pembeli]==i][produk]))
+            tlist = list(df[df[pembeli]==i][produk])
             if len(tlist)>0:
                 transaction_list.append(tlist)
         te = TransactionEncoder()
@@ -235,11 +234,16 @@ def MBA(df, pembeli, produk):
                 recommended_products.extend(antecedent_list)
             recommended_products = list(set(recommended_products))  # Hapus duplikat
 
+            # Memperhitungkan jumlah barang yang direkomendasikan berdasarkan jumlah terjualnya
+            recommended_products_with_quantity = {}
+            for product in recommended_products:
+                total_sold = df[df[produk] == product][produk].count()
+                recommended_products_with_quantity[product] = recommended_products_contribution[product] * total_sold
 
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            recommended_products_sorted = sorted(recommended_products_with_quantity.keys(), key=lambda x: recommended_products_with_quantity[x], reverse=True)
             for idx, item in enumerate(recommended_products_sorted, start=1):
-                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
+                st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_with_quantity[item]})", unsafe_allow_html=True)
 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
