@@ -164,7 +164,7 @@ def MBA(df, pembeli, produk):
             most_sold = df[produk].value_counts()
             if not most_sold.empty:
                 col2.subheader("Jumlah Produk Terjual")
-                col2.write(most_sold)
+                col2.write(most_sold,width=800)
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
