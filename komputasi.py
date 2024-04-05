@@ -123,8 +123,8 @@ def MBA(df, pembeli, produk):
 
         col1, col2 = st.columns(2)
         col1.subheader('Hasil Rules')
-        st.write('Total rules yang dihasilkan :', len(rules))
-        st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
+        col1.write('Total rules yang dihasilkan :', len(rules))
+        col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
 
         if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
             st.write("Tidak ada aturan yang dihasilkan.")
@@ -143,7 +143,11 @@ def MBA(df, pembeli, produk):
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1
             col1.write(matrix)
-            col2.write("cek")
+            col2.subheader('Keterangan')
+            col2.write("- Support = Seberapa sering aturan tersebut muncul dalam data,")
+            col2.write("- Confidence = Seberapa sering aturan tersebut benar")
+            col2.write("- Lift = Ukuran kekuatan hubungan antara dua item")
+            col2.write("- Contribution = kontribusi setiap aturan terhadap peningkatan lift secara keseluruhan")
             
             # Tampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
