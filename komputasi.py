@@ -96,6 +96,7 @@ def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
     temp = re.sub(r'}\)', '', temp)
     return temp
+
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
@@ -162,13 +163,10 @@ def MBA(df, pembeli, produk):
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
-            # Menampilkan informasi tentang produk yang paling laris terjual
+            # Tampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
             most_sold = df[produk].value_counts().head(10)
             if not most_sold.empty:
                 st.subheader("Jumlah Produk Terjual")
-                most_sold.plot(kind='bar')
-                plt.title('Jumlah Produk Terjual')
-                st.pyplot(plt)
                 st.write(most_sold)
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
