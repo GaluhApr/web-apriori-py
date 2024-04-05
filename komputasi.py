@@ -173,6 +173,7 @@ def MBA(df, pembeli, produk):
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
                 
+# Disesuaikan dengan penyesuaian nilai support dan confidence
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
@@ -186,9 +187,9 @@ def MBA(df, pembeli, produk):
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
-        frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)   #nilai support yang digunakan
+        frequent_itemsets = apriori(df2, min_support=0.02, use_colnames=True)   #nilai support yang digunakan
         try:
-            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.1) 
+            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.3) 
             # Ganti min_threshold sesuai dengan nilai confidence yang diinginkan
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
