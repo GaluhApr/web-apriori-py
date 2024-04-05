@@ -140,7 +140,8 @@ def MBA(df, pembeli, produk):
             }
             matrix = pd.DataFrame(matrix)
             matrix.reset_index(drop=True, inplace=True)
-            matrix.index += 1 
+            matrix.index += 1
+            st.write(matrix)
 
             # Tampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
