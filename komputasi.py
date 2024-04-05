@@ -141,9 +141,15 @@ def MBA(df, pembeli, produk):
             matrix = pd.DataFrame(matrix)
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1 
-            st.write(matrix) # Menampilkan seluruh hasil rule
 
             # Informasi tambahan tentang support, confidence, lift, dan contribution
+            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+                st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
+                st.write('Support : {:.3f}'.format(supp))
+                st.write('Confidence : {:.3f}'.format(conf))
+                st.write('Lift : {:.3f}'.format(lift))
+                st.write('Contribution : {:.3f}'.format(supp * conf))
+                st.write('')
 
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
@@ -171,10 +177,3 @@ def MBA(df, pembeli, produk):
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
 
-            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
-                st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
-                st.write('Support : {:.3f}'.format(supp))
-                st.write('Confidence : {:.3f}'.format(conf))
-                st.write('Lift : {:.3f}'.format(lift))
-                st.write('Contribution : {:.3f}'.format(supp * conf))
-                st.write('')
