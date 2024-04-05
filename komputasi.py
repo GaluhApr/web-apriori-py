@@ -121,7 +121,8 @@ def MBA(df, pembeli, produk):
         end_time = time.time()  
         processing_time = end_time - start_time  
 
-        st.subheader('Hasil Rules')
+        col1, col2 = st.columns(2)
+        col1.subheader('Hasil Rules')
         st.write('Total rules yang dihasilkan :', len(rules))
         st.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
 
@@ -141,8 +142,9 @@ def MBA(df, pembeli, produk):
             matrix = pd.DataFrame(matrix)
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1
-            st.write(matrix)
-
+            col1.write(matrix)
+            col2.write("cek")
+            
             # Tampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
             col1.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
