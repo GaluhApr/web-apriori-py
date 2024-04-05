@@ -121,7 +121,7 @@ def MBA(df, pembeli, produk):
         end_time = time.time()  
         processing_time = end_time - start_time  
 
-        col1, col2 = st.columns(2)
+        col1, col3 = st.columns(2)
         col1.subheader('Hasil Rules')
         st.write('Total rules yang dihasilkan :', len(rules))
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
@@ -143,11 +143,11 @@ def MBA(df, pembeli, produk):
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1
             col1.write(matrix)
-            col2.subheader('Keterangan')
-            col2.write("- Support = Seberapa sering aturan tersebut muncul dalam data,")
-            col2.write("- Confidence = Seberapa sering aturan tersebut benar")
-            col2.write("- Lift = Ukuran kekuatan hubungan antara dua item")
-            col2.write("- Contribution = kontribusi setiap aturan terhadap peningkatan lift secara keseluruhan")
+            col3.subheader('Keterangan')
+            col3.write("- Support = Seberapa sering aturan tersebut muncul dalam data,")
+            col3.write("- Confidence = Seberapa sering aturan tersebut benar")
+            col3.write("- Lift = Ukuran kekuatan hubungan antara dua item")
+            col3.write("- Contribution = kontribusi setiap aturan terhadap peningkatan lift secara keseluruhan")
             
             # Tampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
