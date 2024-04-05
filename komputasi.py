@@ -225,15 +225,16 @@ def MBA(df, pembeli, produk):
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
             recommended_products_contribution = {}
-            for consequent, contribution in zip(matrix['consequents'], matrix['contribution']):
-                consequent_list = consequent.split(', ')
-                for item in consequent_list:
+            for antecedent, contribution in zip(matrix['antecedents'], matrix['contribution']):
+                antecedent_list = antecedent.split(', ')
+                for item in antecedent_list:
                     if item not in recommended_products_contribution:
                         recommended_products_contribution[item] = contribution
                     else:
                         recommended_products_contribution[item] += contribution
-                recommended_products.extend(consequent_list)
+                recommended_products.extend(antecedent_list)
             recommended_products = list(set(recommended_products))  # Hapus duplikat
+
 
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
             recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['consequents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
