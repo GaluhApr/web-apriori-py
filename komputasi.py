@@ -64,7 +64,7 @@ def show_transaction_info(df, produk, pembeli):
         if not most_sold.empty:
             c1, c2 = st.columns((2, 1))
             most_sold.plot(kind='bar')
-            plt.title('Jumlah Produk Terjual')
+            plt.title('Grafik Penjualan')
             c1.pyplot(plt)
             c2.write(most_sold)
         else:
@@ -142,9 +142,9 @@ def MBA(df, pembeli, produk):
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1 
 
-            # Informasi tambahan tentang support, confidence, lift, dan contribution
-
-            # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
+            # Tampilkan rekomendasi stok barang untuk dibeli
+            col1, col2 = st.columns(2)
+            col1.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
             recommended_products = []
             recommended_products_contribution = {}
             for antecedent, contribution in zip(matrix['antecedents'], matrix['contribution']):
@@ -156,21 +156,18 @@ def MBA(df, pembeli, produk):
                         recommended_products_contribution[item] += contribution
                 recommended_products.extend(antecedent_list)
             recommended_products = list(set(recommended_products))  # Hapus duplikat
+            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            for idx, item in enumerate(recommended_products_sorted, start=1):
+                col1.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
             # Tampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
             most_sold = df[produk].value_counts().head(10)
             if not most_sold.empty:
-                col1, col2 = st.columns(2)
-                col1.subheader("Jumlah Produk Terjual")
-                col1.write(most_sold)
+                col2.subheader("Jumlah Produk Terjual")
+                col2.write(most_sold)
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
-            # Tampilkan rekomendasi stok barang untuk dibeli
-            col2.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
-            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
-            for idx, item in enumerate(recommended_products_sorted, start=1):
-                col2.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
@@ -179,4 +176,3 @@ def MBA(df, pembeli, produk):
                 st.write('Lift : {:.3f}'.format(lift))
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
-
