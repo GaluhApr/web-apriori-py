@@ -161,7 +161,7 @@ def MBA(df, pembeli, produk):
                 col1.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
             # Tampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
-            most_sold = df[produk].value_counts().head(10)
+            most_sold = df[produk].value_counts()
             if not most_sold.empty:
                 col2.subheader("Jumlah Produk Terjual")
                 col2.write(most_sold)
