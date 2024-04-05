@@ -96,8 +96,6 @@ def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
     temp = re.sub(r'}\)', '', temp)
     return temp
-
-# Disesuaikan dengan penyesuaian nilai support dan confidence
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     if st.button("Mulai Perhitungan Asosiasi"):
@@ -144,6 +142,8 @@ def MBA(df, pembeli, produk):
             matrix.index += 1 
             st.write(matrix) # Menampilkan seluruh hasil rule
 
+            # Informasi tambahan tentang support, confidence, lift, dan contribution
+
             # Menambahkan rekomendasi stok barang untuk dibeli berdasarkan kontribusi
             recommended_products = []
             recommended_products_contribution = {}
@@ -157,11 +157,21 @@ def MBA(df, pembeli, produk):
                 recommended_products.extend(antecedent_list)
             recommended_products = list(set(recommended_products))  # Hapus duplikat
 
-
             st.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
             recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 st.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
+
+            # Menampilkan informasi tentang produk yang paling laris terjual
+            most_sold = df[produk].value_counts().head(10)
+            if not most_sold.empty:
+                st.subheader("Jumlah Produk Terjual")
+                most_sold.plot(kind='bar')
+                plt.title('Jumlah Produk Terjual')
+                st.pyplot(plt)
+                st.write(most_sold)
+            else:
+                st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
 
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
