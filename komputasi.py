@@ -123,7 +123,7 @@ def MBA(df, pembeli, produk):
 
         col1, col2 = st.columns(2)
         col1.subheader('Hasil Rules')
-        col1.write('Total rules yang dihasilkan :', len(rules))
+        st.write('Total rules yang dihasilkan :', len(rules))
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
 
         if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
