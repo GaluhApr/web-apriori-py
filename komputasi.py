@@ -52,8 +52,10 @@ def show_transaction_info(df, produk, pembeli):
         st.subheader(f'Informasi Transaksi:')
         total_produk = df[produk].nunique()
         total_transaksi = df[pembeli].nunique()
+        total_barang_terjual = df[produk].sum()  # Menjumlahkan jumlah barang terjual dari setiap transaksi
         col1.info(f'Total produk     : {total_produk}')
         col2.info(f'Total transaksi  : {total_transaksi}')
+        col2.info(f'Total barang terjual  : {total_barang_terjual}')  # Menampilkan total barang terjual
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
         jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 10)
         if sort == 'Terlaris':
@@ -71,6 +73,7 @@ def show_transaction_info(df, produk, pembeli):
             st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
+
 
 def data_summary(df, pembeli, tanggal, produk):
     st.header('Ringkasan Dataset')
