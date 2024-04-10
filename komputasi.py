@@ -10,6 +10,16 @@ from mlxtend.preprocessing import TransactionEncoder
 from mlxtend.frequent_patterns import association_rules, apriori
 from sklearn.preprocessing import MinMaxScaler
 
+def normalize_data(df):
+    scaler = MinMaxScaler()
+    df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
+    return df
+
+def preprocess_data(df, tanggal, sep, dateformat):
+    df = prep_date(df, tanggal, sep, dateformat)
+    df = normalize_data(df)
+    return df
+
 def prep_date(df, tanggal, sep, dateformat):
     if dateformat == 'ddmmyy':
         df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
@@ -23,16 +33,6 @@ def prep_date(df, tanggal, sep, dateformat):
         df['Tanggal'] = df[tanggal].apply(lambda x: int(x.split(sep)[2]))
         df['Bulan'] = df[tanggal].apply(lambda x: int(x.split(sep)[1]))
         df['Tahun'] = df[tanggal].apply(lambda x: int(x.split(sep)[0]))
-    return df
-
-def normalize_data(df):
-    scaler = MinMaxScaler()
-    df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
-    return df
-
-def preprocess_data(df, tanggal, sep, dateformat):
-    df = prep_date(df, tanggal, sep, dateformat)
-    df = normalize_data(df)
     return df
 
 def dataset_settings(df, pembeli, tanggal, produk):
@@ -54,7 +54,7 @@ def show_transaction_info(df, produk, pembeli):
         total_transaksi = df[pembeli].nunique()
         total_barang_terjual = df[produk].sum()  # Menghitung jumlah total barang terjual
         total_frekuensi_produk = len(df)  # Menghitung frekuensi total dari semua produk
-        col1.info(f'Total produk     : {total_produk}')
+        col1.info(f'Produk terjual     : {total_produk}')
         col2.info(f'Total transaksi  : {total_transaksi}')
         col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk}')  # Menampilkan frekuensi total produk terjual
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
