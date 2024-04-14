@@ -66,6 +66,7 @@ def show_transaction_info(df, produk, pembeli):
             most_sold = most_sold.sort_values(ascending=True)
         if not most_sold.empty:
             c1, c2 = st.columns((2, 1))
+            plt.figure(figsize=(10, 6)) 
             most_sold.plot(kind='bar')
             plt.title('Grafik Penjualan')
             c1.pyplot(plt)
