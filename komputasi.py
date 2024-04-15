@@ -141,7 +141,7 @@ def MBA(df, pembeli, produk):
                 'consequents': consequents,
                 'support': rules['support'],
                 'confidence': rules['confidence'],
-                'lift': rules['lift'],
+                'lift ratio': rules['lift'],
                 'contribution': rules['support'] * rules['confidence']
             }
             matrix = pd.DataFrame(matrix)
@@ -151,7 +151,7 @@ def MBA(df, pembeli, produk):
             col2.subheader('Keterangan')
             col2.write("- Support = Seberapa sering rule tersebut muncul dalam data,")
             col2.write("- Confidence = Seberapa sering rule tersebut benar")
-            col2.write("- Lift = Ukuran Kekuatan hubungan antara dua item")
+            col2.write("- Lift Ratio = Ukuran Kekuatan hubungan antara dua item")
             col2.write("- Contribution = Kontribusi setiap rule terhadap peningkatan lift secara keseluruhan")
             
             # Tampilkan rekomendasi stok barang untuk dibeli
@@ -184,6 +184,6 @@ def MBA(df, pembeli, produk):
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
                 st.write('Confidence : {:.3f}'.format(conf))
-                st.write('Lift : {:.3f}'.format(lift))
+                st.write('Lift Ratio : {:.3f}'.format(lift))
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
