@@ -168,7 +168,7 @@ def MBA(df, pembeli, produk):
                         recommended_products_contribution[item] += contribution
                 recommended_products.extend(antecedent_list)
             recommended_products = list(set(recommended_products))  # Hapus duplikat
-            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift'].values[0]), reverse=True)
+            recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift ratio'].values[0]), reverse=True)
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 col1.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
 
