@@ -180,11 +180,13 @@ def MBA(df, pembeli, produk):
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
-
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+                lift_ratio = lift / (rules['antecedents'].apply(len) * rules['consequents'].apply(len))
                 st.info(f'Jika customer membeli {a}, maka ia membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
                 st.write('Confidence : {:.3f}'.format(conf))
                 st.write('Lift : {:.3f}'.format(lift))
+                st.write('Lift Ratio : {:.3f}'.format(lift_ratio))
                 st.write('Contribution : {:.3f}'.format(supp * conf))
                 st.write('')
+
