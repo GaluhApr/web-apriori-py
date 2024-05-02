@@ -149,10 +149,10 @@ def MBA(df, pembeli, produk):
             matrix.index += 1
             col1.write(matrix)
             col2.subheader('Keterangan')
-            col2.write("- Support = Seberapa sering rule tersebut muncul dalam data,")
-            col2.write("- Confidence = Seberapa sering rule tersebut benar")
+            col2.write("- Support = Seberapa sering sebuah aturan tersebut muncul dalam data,")
+            col2.write("- Confidence = Seberapa sering aturan tersebut dikatakan benar")
             col2.write("- Lift Ratio = Ukuran Kekuatan hubungan antara dua item")
-            col2.write("- Contribution = Kontribusi setiap rule terhadap peningkatan lift secara keseluruhan")
+            col2.write("- Contribution = Kontribusi setiap aturan terhadap peningkatan lift secara keseluruhan")
             
             # Tampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
