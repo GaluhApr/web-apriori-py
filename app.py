@@ -10,7 +10,7 @@ st.title('Data Mining Apriori')
 st.write('OPTIMASI STOK BARANG DENGAN ANALISIS PENJUALAN MENGGUNAKAN METODE ASSOCIATION RULE MINING DI TOKO HANDARI')
 
 
-image = Image.open('images/image.jpg')
+image = Image.open('images/image1.jpg')
 st.image(image)
 
 
