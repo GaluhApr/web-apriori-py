@@ -7,7 +7,7 @@ from komputasi import data_summary, MBA
 st.set_page_config(page_title="Apriori Toko Handari", page_icon="images/basket.png", layout="wide")
 
 st.title('Data Mining Apriori')
-st.write('OPTIMASI STOK BARANG DENGAN ANALISIS PENJUALAN MENGGUNAKAN METODE ASSOCIATION RULE MINING DI TOKO HANDARI')
+st.write('ANALISIS DATA PENJUALAN')
 
 
 image = Image.open('images/image1.jpg')
