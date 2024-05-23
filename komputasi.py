@@ -52,11 +52,11 @@ def show_transaction_info(df, produk, pembeli):
         st.subheader(f'Informasi Transaksi:')
         total_produk = df[produk].nunique()
         total_transaksi = df[pembeli].nunique()
-        total_barang_terjual = df[produk].sum()  # Menghitung jumlah total barang terjual
-        total_frekuensi_produk = len(df)  # Menghitung frekuensi total dari semua produk
+        total_barang_terjual = df[produk].sum()  #menghitung jumlah total barang terjual
+        total_frekuensi_produk = len(df)  #menghitung frekuensi total dari semua produk
         col1.info(f'Produk terjual     : {total_produk}')
         col2.info(f'Total transaksi  : {total_transaksi}')
-        col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk}')  # Menampilkan frekuensi total produk terjual
+        col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk}')  #menampilkan frekuensi total produk terjual
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
         jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 10)
         if sort == 'Terlaris':
@@ -113,10 +113,9 @@ def MBA(df, pembeli, produk):
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
-        frequent_itemsets = apriori(df2, min_support=0.002, use_colnames=True)   #nilai support yang digunakan
+        frequent_itemsets = apriori(df2, min_support=0.003, use_colnames=True)   #nilai support yang digunakan
         try:
-            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.01) 
-            # Ganti min_threshold sesuai dengan nilai confidence yang diinginkan
+            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.01)  #nilai confidence yang diinginkan
         except ValueError as e:
             st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
             st.stop()
@@ -126,7 +125,7 @@ def MBA(df, pembeli, produk):
         col1.subheader('Hasil Rules (Pola Pembelian Pelanggan)')
         st.write('Total rules yang dihasilkan :', len(rules))
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
-        if len(rules) == 0:  # Tidak ada aturan yang dihasilkan
+        if len(rules) == 0:  #tidak ada aturan yang dihasilkan
             st.write("Tidak ada aturan yang dihasilkan.")
         else:
             antecedents = rules['antecedents'].apply(prep_frozenset)
@@ -149,7 +148,7 @@ def MBA(df, pembeli, produk):
             col2.write("- Lift Ratio = Ukuran Kekuatan hubungan antara dua item")
             col2.write("- Contribution = Kontribusi setiap rules terhadap peningkatan lift secara keseluruhan")
             
-            # Tampilkan rekomendasi stok barang untuk dibeli
+            #menampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
             col1.subheader("Rekomendasi stok barang untuk dibeli (contribution) :")
             recommended_products = []
@@ -162,11 +161,11 @@ def MBA(df, pembeli, produk):
                     else:
                         recommended_products_contribution[item] += contribution
                 recommended_products.extend(antecedent_list)
-            recommended_products = list(set(recommended_products))  # Hapus duplikat
+            recommended_products = list(set(recommended_products))  # hapus duplikat
             recommended_products_sorted = sorted(recommended_products, key=lambda x: (recommended_products_contribution[x], matrix[matrix['antecedents'].apply(lambda y: x in y)]['lift ratio'].values[0]), reverse=True)
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 col1.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
-            # Tampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
+            #menampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
             most_sold = df[produk].value_counts()
             if not most_sold.empty:
                 col2.subheader("Jumlah Produk Terjual")
