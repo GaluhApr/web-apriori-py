@@ -113,7 +113,7 @@ def MBA(df, pembeli, produk):
         te = TransactionEncoder()
         te_ary = te.fit(transaction_list).transform(transaction_list)
         df2 = pd.DataFrame(te_ary, columns=te.columns_)
-        frequent_itemsets = apriori(df2, min_support=0.001, use_colnames=True)   #nilai support yang digunakan
+        frequent_itemsets = apriori(df2, min_support=0.002, use_colnames=True)   #nilai support yang digunakan
         try:
             rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.01)  #nilai confidence yang diinginkan
         except ValueError as e:
@@ -177,7 +177,7 @@ def MBA(df, pembeli, produk):
 
             # Tampilkan rekomendasi stok barang
             for idx, item in enumerate(recommended_products_sorted, start=1):
-                col1.write(f"{idx}. <font color='red'>{item}</font> ({recommended_products_contribution[item]})", unsafe_allow_html=True)
+                col1.write(f"{idx}. <font color='red'>{item}</font>", unsafe_allow_html=True)
 
             #menampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
             most_sold = df[produk].value_counts()
