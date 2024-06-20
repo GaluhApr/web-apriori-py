@@ -52,11 +52,11 @@ def show_transaction_info(df, produk, pembeli):
         total_transaksi = df[pembeli].nunique()
         total_barang_terjual = df[produk].sum()  #menghitung jumlah total barang terjual
         total_frekuensi_produk = len(df)  #menghitung frekuensi total dari semua produk
-        col1.info(f'Produk terjual     : {total_produk}')
-        col2.info(f'Total transaksi  : {total_transaksi}')
-        col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk}')  #menampilkan frekuensi total produk terjual
+        col1.info(f'Produk terjual     : {total_produk} Jenis')
+        col2.info(f'Total transaksi  : {total_transaksi} Transaksi')
+        col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk} Produk Terjual')  #menampilkan frekuensi total produk terjual
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
-        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 10, step=1, format="%d")
+        jumlah = col2.slider('Tentukan jumlah produk yang ingin ditampilkan', 0, total_produk, 10, step=1, format="%d")
         if sort == 'Terlaris':
             most_sold = df[produk].value_counts().head(jumlah)
         else:
