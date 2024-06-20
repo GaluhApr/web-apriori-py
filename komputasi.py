@@ -83,7 +83,7 @@ def data_summary(df, pembeli, tanggal, produk):
     css = """
     <style>
         table {
-            font-size: 20px !important;  /* Mengubah ukuran font tabel */
+            font-size: 30px !important;  /* Mengubah ukuran font tabel */
         }
         th {
             background-color: #f0f0f0;  /* Warna latar belakang header tabel */
