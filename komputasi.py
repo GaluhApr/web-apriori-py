@@ -41,8 +41,10 @@ def dataset_settings(df, pembeli, tanggal, produk):
     by_year = c1.selectbox('Tahun ', (year_list))
     if by_year != 'Semua':
         df = df[df['Tahun'] == int(by_year)]
-        by_month = c2.slider('Bulan', 1, 12, (1, 12))
-        df = df[df['Bulan'].between(int(by_month[0]), int(by_month[1]), inclusive="both")]
+        month_list = np.arange(1, 13)  # Daftar bulan dari 1 sampai 12
+        by_months = c2.multiselect('Pilih Bulan', month_list)
+        if by_months:
+            df = df[df['Bulan'].isin(by_months)]
     return df
 
 def show_transaction_info(df, produk, pembeli):
