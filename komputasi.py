@@ -60,7 +60,8 @@ def show_transaction_info(df, produk, pembeli):
         col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk} Produk Terjual')  #menampilkan frekuensi total produk terjual
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
         jumlah_options = list(range(1, total_produk + 1))  # Membuat daftar pilihan jumlah produk
-        jumlah = col2.selectbox('Tentukan jumlah produk yang ingin ditampilkan', jumlah_options)
+        default_index = 9 if total_produk >= 10 else 0  # Default index untuk 10, atau 0 jika kurang dari 10 produk
+        jumlah = col2.selectbox('Tentukan jumlah produk yang ingin ditampilkan', jumlah_options, index=default_index)
         if sort == 'Terlaris':
             most_sold = df[produk].value_counts().head(jumlah)
         else:
