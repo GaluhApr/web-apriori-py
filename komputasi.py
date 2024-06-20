@@ -80,25 +80,28 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 
+
 def data_summary(df, pembeli, tanggal, produk):
+    # CSS untuk mengatur ukuran font dan membuat tabel scrollable
     st.markdown("""<style>
         .big-font {font-size: 30px !important; font-weight: bold;}
-        .scrollable-table {
-            max-height: 400px;
-            overflow-y: auto;
+        .scrollable-table-wrapper {
             overflow-x: auto;
         }
-        table {
-            font-size: 20px;
+        .scrollable-table {
             width: 100%; /* Mengisi lebar tabel */
+            max-height: 400px;
+            overflow-y: auto;
+            display: block;
+            font-size: 14px;
+        }
+        th, td {
+            text-align: center; /* Pusatkan teks di header dan sel */
+            font-size: 14px;
+            padding: 8px; /* Beri padding agar lebih mudah dibaca */
         }
         th {
-            font-size: 20px;
-            text-align: center; /* Pusatkan teks di header */
-        }
-        td {
-            font-size: 18px;
-            text-align: center; /* Pusatkan teks di sel */
+            background-color: #f0f0f0; /* Warna latar header */
         }
     </style>""", unsafe_allow_html=True)
     
@@ -118,9 +121,11 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     
-    # Tambahkan kelas 'scrollable-table' untuk membuat tabel scrollable
+    # Tambahkan wrapper untuk tabel scrollable
+    st.markdown('<div class="scrollable-table-wrapper">', unsafe_allow_html=True)
     st.markdown('<div class="scrollable-table">', unsafe_allow_html=True)
     st.write(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
     show_transaction_info(df, produk, pembeli)
