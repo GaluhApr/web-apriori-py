@@ -81,7 +81,24 @@ def show_transaction_info(df, produk, pembeli):
 
 
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>
+        .big-font {font-size: 30px !important; font-weight: bold;}
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+        table {
+            font-size: 14px;
+        }
+        th {
+            font-size: 14px;
+        }
+        td {
+            font-size: 12px;
+        }
+    </style>""", unsafe_allow_html=True)
+    
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -98,25 +115,10 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     
-    # Mengubah ukuran font untuk header kolom (th) dan sel (td) di dalam tabel HTML
-    css = """
-    <style>
-        table {
-            font-size: 20px;
-        }
-        th {
-            font-size: 20px;
-        }
-        td {
-            font-size: 20px;
-        }
-    </style>
-    """
-    st.write(css, unsafe_allow_html=True)
-    
-    # Mengonversi DataFrame menjadi format HTML dengan penyesuaian ukuran font
-    html = df.to_html(classes='dataframe', escape=False)
-    st.write(html, unsafe_allow_html=True)
+    # Menambahkan kelas 'scrollable-table' untuk membuat tabel scrollable
+    st.markdown('<div class="scrollable-table">', unsafe_allow_html=True)
+    st.write(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
     show_transaction_info(df, produk, pembeli)
     
