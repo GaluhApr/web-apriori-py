@@ -95,7 +95,7 @@ def data_summary(df, pembeli, tanggal, produk):
         st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
-    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
+    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
     show_transaction_info(df, produk, pembeli)
     return df
 
@@ -186,7 +186,7 @@ def MBA(df, pembeli, produk):
             matrix['consequents'] = matrix['consequents'].apply(lambda x: prep_frozenset(frozenset([x])))
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1
-            col1.write(matrix)
+            col1.write(matrix, use_container_width=True)
             
             col2.subheader('Keterangan')
             col2.write("- Support = Seberapa sering sebuah rules tersebut muncul dalam data,")
@@ -228,7 +228,7 @@ def MBA(df, pembeli, produk):
             most_sold = df[produk].value_counts()
             if not most_sold.empty:
                 col2.subheader("Jumlah Produk Terjual")
-                col2.dataframe(most_sold, width=400)  
+                col2.dataframe(most_sold, width=400, use_container_width=True)  
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
