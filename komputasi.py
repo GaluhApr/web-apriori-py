@@ -9,6 +9,7 @@ import time
 from sklearn.preprocessing import MinMaxScaler
 
 
+
 def normalize_data(df):
     scaler = MinMaxScaler()
     df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
@@ -79,56 +80,26 @@ def show_transaction_info(df, produk, pembeli):
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
-
-
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown("""<style>
-        .big-font { font-size: 30px !important; font-weight: bold; }
-        .scrollable-table-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 16px;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-    </style>""", unsafe_allow_html=True)
-    
+    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
-    
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
     dateformat = col2.radio('Tentukan format urutan tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
-    
     try:
         df = prep_date(df, tanggal, sep, dateformat)
-    except (ValueError, IndexError):
-        st.warning('Format atau separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
+    except ValueError:
+        st.warning('Format Atau Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
-    
+    except IndexError:
+        st.warning('Format Atau Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
+        st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
-    
-    # Mengonversi DataFrame menjadi format HTML tanpa penyesuaian font
-    html = df.to_html(classes='dataframe scrollable-table', escape=False)
-    st.markdown('<div class="scrollable-table-wrapper">', unsafe_allow_html=True)
-    st.markdown(html, unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-    
+    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
     show_transaction_info(df, produk, pembeli)
-    
     return df
-
 
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
