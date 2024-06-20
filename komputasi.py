@@ -8,6 +8,18 @@ import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
 
+# Mengatur CSS untuk ukuran font
+css = """
+<style>
+    .dataframe tbody tr td {
+        font-size: 20px;
+    }
+</style>
+"""
+
+# Render CSS
+st.markdown(css, unsafe_allow_html=True)
+
 def normalize_data(df):
     scaler = MinMaxScaler()
     df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
@@ -189,14 +201,14 @@ def MBA(df, pembeli, produk):
             col1.write(matrix, use_container_width=True)
             
             col2.subheader('Keterangan')
-            col2.write("- Support = Seberapa sering sebuah rules tersebut muncul dalam data,")
+            col2.write("- Support = Seberapa sering sebuah rules tersebut muncul dalam data")
             col2.write("- Confidence = Seberapa sering rules tersebut dikatakan benar")
             col2.write("- Lift Ratio = Ukuran Kekuatan hubungan antara dua item")
             col2.write("- Contribution = Kontribusi setiap rules terhadap peningkatan lift secara keseluruhan")
             
             # Menampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
-            col1.subheader("Rekomendasi stok barang untuk dibeli:")
+            col1.subheader("Rekomendasi barang untuk dibeli:")
             recommended_products = []
             recommended_products_contribution = {}
             
