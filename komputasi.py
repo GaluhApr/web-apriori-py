@@ -79,6 +79,20 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
         
 def data_summary(df, pembeli, tanggal, produk):
+    # CSS untuk memperbesar font tabel
+    css = """
+    <style>
+        table {
+            font-size: 20px !important;  /* Mengubah ukuran font tabel */
+        }
+        th {
+            background-color: #f0f0f0;  /* Warna latar belakang header tabel */
+            color: black;  /* Warna teks header tabel */
+        }
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)  # Menyisipkan CSS ke dalam Streamlit app
+
     st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
