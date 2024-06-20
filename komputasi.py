@@ -66,11 +66,13 @@ def show_transaction_info(df, produk, pembeli):
             c1, c2 = st.columns([3, 1])  # Mengubah proporsi kolom
             plt.figure(figsize=(10, 6))  # Meningkatkan ukuran grafik
             plt.title('Grafik Penjualan', fontsize=20)
-            plt.xlabel('Produk', fontsize=10)
+            plt.xlabel('Produk', fontsize=14)   
             plt.ylabel('Jumlah', fontsize=14)
             sns.barplot(data=most_sold)
+            plt.xticks(rotation=90)  # Menjadikan label vertikal
             c1.pyplot(plt)
             c2.write(most_sold)
+            
         else:
             st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
     except Exception as e:
