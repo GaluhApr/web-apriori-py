@@ -79,10 +79,9 @@ def show_transaction_info(df, produk, pembeli):
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
+
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown("""<style>.dataframe tbody tr th {font-size: 20px;}</style>""", unsafe_allow_html=True)
-    st.markdown("""<style>.dataframe tbody tr td {font-size: 20px;}</style>""", unsafe_allow_html=True)
-    st.markdown("""<style>.big-font {font-size: 30px !important; font-weight: bold;}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -99,20 +98,25 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     
-    # Mengubah ukuran font untuk header kolom (th) dan sel (td) di dalam tabel DataFrame
+    # Mengubah ukuran font untuk header kolom (th) dan sel (td) di dalam tabel HTML
     css = """
     <style>
-        .dataframe th {
-            font-size: 14px;
+        table {
+            font-size: 20px;
         }
-        .dataframe td {
-            font-size: 12px;
+        th {
+            font-size: 20px;
+        }
+        td {
+            font-size: 20px;
         }
     </style>
     """
-    st.markdown(css, unsafe_allow_html=True)
+    st.write(css, unsafe_allow_html=True)
     
-    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
+    # Mengonversi DataFrame menjadi format HTML dengan penyesuaian ukuran font
+    html = df.to_html(classes='dataframe', escape=False)
+    st.write(html, unsafe_allow_html=True)
     
     show_transaction_info(df, produk, pembeli)
     
