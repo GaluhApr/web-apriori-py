@@ -83,11 +83,6 @@ def show_transaction_info(df, produk, pembeli):
 def data_summary(df, pembeli, tanggal, produk):
     st.markdown("""<style>
         .big-font {font-size: 30px !important; font-weight: bold;}
-        .scrollable-table {
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: auto;
-        }
         table {
             font-size: 14px;
         }
@@ -115,10 +110,10 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     
-    # Menambahkan kelas 'scrollable-table' untuk membuat tabel scrollable
-    st.markdown('<div class="scrollable-table">', unsafe_allow_html=True)
-    st.write(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Menggunakan st.slider untuk menentukan jumlah baris yang ditampilkan
+    num_rows = st.slider("Jumlah Baris yang Ditampilkan", min_value=1, max_value=len(df), value=len(df))
+    
+    st.dataframe(df.head(num_rows).sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
     
     show_transaction_info(df, produk, pembeli)
     
