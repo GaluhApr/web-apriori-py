@@ -82,12 +82,15 @@ def data_summary(df, pembeli, tanggal, produk):
     # CSS untuk memperbesar font tabel
     css = """
     <style>
-        table {
-            font-size: 30px !important;  /* Mengubah ukuran font tabel */
+        div.streamlit-container table {
+            font-size: 20px !important;  /* Mengubah ukuran font tabel */
         }
-        th {
+        div.streamlit-container th {
             background-color: #f0f0f0;  /* Warna latar belakang header tabel */
             color: black;  /* Warna teks header tabel */
+        }
+        div.streamlit-container td {
+            color: black;  /* Warna teks isi tabel */
         }
     </style>
     """
