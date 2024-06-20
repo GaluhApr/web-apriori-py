@@ -66,7 +66,7 @@ def show_transaction_info(df, produk, pembeli):
             c1, c2 = st.columns([3, 1])  # Mengubah proporsi kolom
             plt.figure(figsize=(10, 6))  # Meningkatkan ukuran grafik
             plt.title('Grafik Penjualan', fontsize=20)
-            plt.xlabel('Produk', fontsize=14)
+            plt.xlabel('Produk', fontsize=10)
             plt.ylabel('Jumlah', fontsize=14)
             sns.barplot(data=most_sold)
             c1.pyplot(plt)

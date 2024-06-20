@@ -15,9 +15,9 @@ st.image(image)
 
 
 dataset_file = st.file_uploader("Upload Dataset Anda", type=['csv'])
-st.write('Contoh format dataset : ')
-st.write('- ID,DATE,ITEM')
-st.write('- [Kaggle Groceries Dataset](https://www.kaggle.com/datasets/heeraldedhia/groceries-dataset?datasetId=877335&sortBy=voteCount)')
+# st.write('Contoh format dataset : ')
+# st.write('- ID,DATE,ITEM')
+# st.write('- [Kaggle Groceries Dataset](https://www.kaggle.com/datasets/heeraldedhia/groceries-dataset?datasetId=877335&sortBy=voteCount)')
 
 
 if dataset_file is None:
