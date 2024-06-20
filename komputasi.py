@@ -8,29 +8,6 @@ import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
 
-st.markdown("""<style>
-        .big-font { font-size: 30px !important; font-weight: bold; }
-        .scrollable-table-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 16px;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-        body {
-            zoom: 150%;
-        }
-    </style>""", unsafe_allow_html=True)
 
 def normalize_data(df):
     scaler = MinMaxScaler()

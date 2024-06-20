@@ -6,6 +6,30 @@ from komputasi import data_summary, MBA
 
 st.set_page_config(page_title="Apriori Toko Handari", page_icon="images/basket.png", layout="wide")
 
+st.markdown("""<style>
+        .big-font { font-size: 30px !important; font-weight: bold; }
+        .scrollable-table-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        body {
+            zoom: 150%;
+        }
+    </style>""", unsafe_allow_html=True)
+
 st.title('Data Mining Apriori')
 st.write('ANALISIS DATA PENJUALAN')
 
