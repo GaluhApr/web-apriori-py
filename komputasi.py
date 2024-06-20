@@ -56,17 +56,19 @@ def show_transaction_info(df, produk, pembeli):
         col2.info(f'Total transaksi  : {total_transaksi}')
         col2.info(f'Frekuensi total produk terjual  : {total_frekuensi_produk}')  #menampilkan frekuensi total produk terjual
         sort = col1.radio('Tentukan kategori produk', ('Terlaris', 'Kurang Laris'))
-        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 10)
+        jumlah = col2.slider('Tentukan jumlah produk', 0, total_produk, 10, step=1, format="%d")
         if sort == 'Terlaris':
             most_sold = df[produk].value_counts().head(jumlah)
         else:
             most_sold = df[produk].value_counts().tail(jumlah)
             most_sold = most_sold.sort_values(ascending=True)
         if not most_sold.empty:
-            c1, c2 = st.columns((2, 1))
-            plt.figure(figsize=(8, 4)) 
-            most_sold.plot(kind='bar')
-            plt.title('Grafik Penjualan')
+            c1, c2 = st.columns([3, 1])  # Mengubah proporsi kolom
+            plt.figure(figsize=(10, 6))  # Meningkatkan ukuran grafik
+            plt.title('Grafik Penjualan', fontsize=20)
+            plt.xlabel('Produk', fontsize=14)
+            plt.ylabel('Jumlah', fontsize=14)
+            sns.barplot(data=most_sold)
             c1.pyplot(plt)
             c2.write(most_sold)
         else:
@@ -75,7 +77,8 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
         
 def data_summary(df, pembeli, tanggal, produk):
-    st.header('Ringkasan Dataset')
+    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
@@ -234,3 +237,5 @@ def MBA(df, pembeli, produk):
                 st.write('Lift Ratio : {:.4f}'.format(lift))
                 st.write('Contribution : {:.4f}'.format(supp * conf))
                 st.write('')
+
+            st.markdown('<br><br>', unsafe_allow_html=True)  # Menambahkan spasi vertikal
