@@ -264,3 +264,4 @@ if __name__ == "__main__":
         df = preprocess_data(df, tanggal, '-', 'ddmmyy')  # Sesuaikan separator dan format tanggal sesuai dataset Anda
         df = data_summary(df, pembeli, tanggal, produk)
         MBA(df, pembeli, produk)
+ 
