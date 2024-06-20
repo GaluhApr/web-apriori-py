@@ -101,6 +101,11 @@ def prep_frozenset(rules):
 
 def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
+    
+    # Input untuk menyesuaikan minimum support dan confidence
+    min_support = st.number_input("Masukkan minimum support:", min_value=0.01, max_value=1.0, value=0.01)
+    min_confidence = st.number_input("Masukkan minimum confidence:", min_value=0.01, max_value=1.0, value=0.1)
+    
     if st.button("Mulai Perhitungan Asosiasi"):
         start_time = time.time()  
         transaction_list = []
@@ -135,27 +140,30 @@ def MBA(df, pembeli, produk):
                 items = list(itemset)
                 support = item_counts[itemset] / total_transactions
                 
-                # Hitung confidence dan lift untuk setiap aturan
-                confidence_a_to_b = support / (item_counts[items[0]] / total_transactions)
-                confidence_b_to_a = support / (item_counts[items[1]] / total_transactions)
-                lift_a_to_b = confidence_a_to_b / (item_counts[items[1]] / total_transactions)
-                lift_b_to_a = confidence_b_to_a / (item_counts[items[0]] / total_transactions)
-                
-                rules.append({
-                    'antecedents': items[0],
-                    'consequents': items[1],
-                    'support': support,
-                    'confidence': confidence_a_to_b,
-                    'lift': lift_a_to_b
-                })
-                
-                rules.append({
-                    'antecedents': items[1],
-                    'consequents': items[0],
-                    'support': support,
-                    'confidence': confidence_b_to_a,
-                    'lift': lift_b_to_a
-                })
+                if support >= min_support:
+                    # Hitung confidence dan lift untuk setiap aturan
+                    confidence_a_to_b = support / (item_counts[items[0]] / total_transactions)
+                    confidence_b_to_a = support / (item_counts[items[1]] / total_transactions)
+                    lift_a_to_b = confidence_a_to_b / (item_counts[items[1]] / total_transactions)
+                    lift_b_to_a = confidence_b_to_a / (item_counts[items[0]] / total_transactions)
+                    
+                    if confidence_a_to_b >= min_confidence:
+                        rules.append({
+                            'antecedents': items[0],
+                            'consequents': items[1],
+                            'support': support,
+                            'confidence': confidence_a_to_b,
+                            'lift': lift_a_to_b
+                        })
+                    
+                    if confidence_b_to_a >= min_confidence:
+                        rules.append({
+                            'antecedents': items[1],
+                            'consequents': items[0],
+                            'support': support,
+                            'confidence': confidence_b_to_a,
+                            'lift': lift_b_to_a
+                        })
         
         end_time = time.time()  
         processing_time = end_time - start_time  
@@ -181,12 +189,12 @@ def MBA(df, pembeli, produk):
             col2.write("- Lift Ratio = Ukuran Kekuatan hubungan antara dua item")
             col2.write("- Contribution = Kontribusi setiap rules terhadap peningkatan lift secara keseluruhan")
             
-            # menampilkan rekomendasi stok barang untuk dibeli
+            # Menampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
             col1.subheader("Rekomendasi stok barang untuk dibeli:")
             recommended_products = []
             recommended_products_contribution = {}
-
+            
             # Ambil semua item dari antecedents dan consequents dari setiap aturan asosiasi
             for antecedent, consequent, contribution in zip(matrix['antecedents'], matrix['consequents'], matrix['support'] * matrix['confidence']):
                 antecedent_list = antecedent.split(', ')
@@ -200,25 +208,25 @@ def MBA(df, pembeli, produk):
                     else:
                         recommended_products_contribution[item] += contribution
                 recommended_products.extend(items)
-
+            
             # Hapus duplikat item
             recommended_products = list(set(recommended_products))  
-
+            
             # Urutkan item berdasarkan kontribusi
             recommended_products_sorted = sorted(recommended_products, key=lambda x: recommended_products_contribution[x], reverse=True)
-
+            
             # Tampilkan rekomendasi stok barang
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 col1.write(f"{idx}. <font color='red'>{item}</font>", unsafe_allow_html=True)
-
-            # menampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
+            
+            # Menampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
             most_sold = df[produk].value_counts()
             if not most_sold.empty:
                 col2.subheader("Jumlah Produk Terjual")
                 col2.dataframe(most_sold, width=400)  
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
-
+            
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
