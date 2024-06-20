@@ -80,6 +80,7 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 
+
 def data_summary(df, pembeli, tanggal, produk):
     st.markdown("""<style>
         .big-font { font-size: 30px !important; font-weight: bold; }
@@ -119,8 +120,10 @@ def data_summary(df, pembeli, tanggal, produk):
     df = dataset_settings(df, pembeli, tanggal, produk)
     
     # Mengonversi DataFrame menjadi format HTML tanpa penyesuaian font
-    html = df.to_html(classes='dataframe', escape=False)
+    html = df.to_html(classes='dataframe scrollable-table', escape=False)
+    st.markdown('<div class="scrollable-table-wrapper">', unsafe_allow_html=True)
     st.markdown(html, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
     show_transaction_info(df, produk, pembeli)
     
