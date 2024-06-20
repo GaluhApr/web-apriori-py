@@ -7,7 +7,6 @@ import matplotlib.pyplot as plt
 import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
-from awesome_table import AwesomeTable
 
 def normalize_data(df):
     scaler = MinMaxScaler()
@@ -80,8 +79,37 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 def display_custom_table(df):
-    # Menggunakan awesome_table untuk menampilkan tabel
-    AwesomeTable(df)
+    # CSS untuk memperbesar font tabel
+    css = """
+    <style>
+        .custom-table {
+            font-size: 20px;  /* Mengubah ukuran font tabel */
+            width: 100%;  /* Lebar tabel penuh */
+        }
+        .custom-table th {
+            background-color: #f0f0f0;  /* Warna latar belakang header tabel */
+            color: black;  /* Warna teks header tabel */
+        }
+        .custom-table td {
+            color: black;  /* Warna teks isi tabel */
+        }
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)  # Menyisipkan CSS ke dalam Streamlit app
+
+    # Membuat tabel HTML
+    html = "<table class='custom-table'><tr>"  # Mulai tabel dengan class custom-table
+    for col in df.columns:
+        html += f"<th>{col}</th>"
+    html += "</tr>"
+    for _, row in df.iterrows():
+        html += "<tr>"
+        for val in row:
+            html += f"<td>{val}</td>"
+        html += "</tr>"
+    html += "</table>"
+
+    st.markdown(html, unsafe_allow_html=True)
 
 def data_summary(df, pembeli, tanggal, produk):
     st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
@@ -100,7 +128,7 @@ def data_summary(df, pembeli, tanggal, produk):
         st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
-    display_custom_table(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True))
+    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
     show_transaction_info(df, produk, pembeli)
     return df
 
@@ -237,6 +265,8 @@ def MBA(df, pembeli, produk):
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
+
+            st.subheader('Pola Pembelian Pelanggan')
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
                 st.write('Support : {:.4f}'.format(supp))
@@ -246,22 +276,3 @@ def MBA(df, pembeli, produk):
                 st.write('')
 
             st.markdown('<br><br>', unsafe_allow_html=True)  # Menambahkan spasi vertikal
-
-# Contoh penggunaan fungsi di atas dalam aplikasi Streamlit
-if __name__ == "__main__":
-    st.title('Market Basket Analysis')
-    uploaded_file = st.file_uploader("Unggah file CSV", type=["csv"])
-    if uploaded_file:
-        df = pd.read_csv(uploaded_file)
-        st.write("Dataset Asli")
-        st.write(df.head())
-        
-        st.sidebar.header('Pengaturan Kolom')
-        pembeli = st.sidebar.selectbox('Pilih Kolom Pembeli', df.columns)
-        produk = st.sidebar.selectbox('Pilih Kolom Produk', df.columns)
-        tanggal = st.sidebar.selectbox('Pilih Kolom Tanggal', df.columns)
-        
-        df = preprocess_data(df, tanggal, '-', 'ddmmyy')  # Sesuaikan separator dan format tanggal sesuai dataset Anda
-        df = data_summary(df, pembeli, tanggal, produk)
-        MBA(df, pembeli, produk)
- 
