@@ -8,6 +8,8 @@ import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
 
+html = df.to_html(classes='dataframe', escape=False)
+
 # Mengatur CSS untuk ukuran font
 css = """
 <style>
@@ -16,8 +18,6 @@ css = """
     }
 </style>
 """
-
-# Render CSS
 st.markdown(css, unsafe_allow_html=True)
 
 def normalize_data(df):
@@ -107,7 +107,7 @@ def data_summary(df, pembeli, tanggal, produk):
         st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
-    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
+    st.dataframe(html.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True,  unsafe_allow_html=True)
     show_transaction_info(df, produk, pembeli)
     return df
 
