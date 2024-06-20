@@ -8,23 +8,6 @@ st.set_page_config(page_title="Apriori Toko Handari", page_icon="images/basket.p
 
 st.markdown("""<style>
         .big-font { font-size: 30px !important; font-weight: bold; }
-        .scrollable-table-wrapper {
-            max-height: 400px;
-            overflow-y: auto;
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 16px;
-        }
-        th, td {
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
         body {
             zoom: 125%;
         }
