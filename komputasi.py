@@ -11,7 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 st.markdown("""<style>
         /* Menargetkan tabel DataFrame secara spesifik */
         div[data-testid="stDataFrame"] table {
-            font-size: 18px !important; /* Atur ukuran font tabel */
+            font-size: 20px !important; /* Atur ukuran font tabel */
         }
         div[data-testid="stDataFrame"] th {
             background-color: #f0f0f0 !important; /* Warna latar belakang header tabel */
