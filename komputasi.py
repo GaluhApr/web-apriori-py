@@ -83,10 +83,10 @@ def data_summary(df, pembeli, tanggal, produk):
     try:
         df = prep_date(df, tanggal, sep, dateformat)
     except ValueError:
-        st.warning('Format tanggal tidak sesuai! Silakan cek kembali dan pastikan format yang benar.')
+        st.warning('Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
     except IndexError:
-        st.warning('Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
+        st.warning('Format tanggal tidak sesuai! Silakan cek kembali dan pastikan format yang benar.')
         st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
