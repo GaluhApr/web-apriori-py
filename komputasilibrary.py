@@ -6,6 +6,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import streamlit as st
 import time
+from mlxtend.preprocessing import TransactionEncoder
+from mlxtend.frequent_patterns import association_rules, apriori
 from sklearn.preprocessing import MinMaxScaler
 
 def normalize_data(df):
@@ -108,87 +110,53 @@ def MBA(df, pembeli, produk):
             tlist = list(set(df[df[pembeli]==i][produk]))
             if len(tlist)>0:
                 transaction_list.append(tlist)
-        
-        # Hitung frekuensi itemset
-        item_counts = {}
-        total_transactions = len(transaction_list)
-        
-        for transaction in transaction_list:
-            for item in transaction:
-                if item in item_counts:
-                    item_counts[item] += 1
-                else:
-                    item_counts[item] = 1
-                
-            for i in range(len(transaction)):
-                for j in range(i + 1, len(transaction)):
-                    itemset = frozenset([transaction[i], transaction[j]])
-                    if itemset in item_counts:
-                        item_counts[itemset] += 1
-                    else:
-                        item_counts[itemset] = 1
-        
-        # Buat aturan asosiasi secara manual
-        rules = []
-        for itemset in item_counts:
-            if isinstance(itemset, frozenset) and len(itemset) == 2:
-                items = list(itemset)
-                support = item_counts[itemset] / total_transactions
-                
-                # Hitung confidence dan lift untuk setiap aturan
-                confidence_a_to_b = support / (item_counts[items[0]] / total_transactions)
-                confidence_b_to_a = support / (item_counts[items[1]] / total_transactions)
-                lift_a_to_b = confidence_a_to_b / (item_counts[items[1]] / total_transactions)
-                lift_b_to_a = confidence_b_to_a / (item_counts[items[0]] / total_transactions)
-                
-                rules.append({
-                    'antecedents': items[0],
-                    'consequents': items[1],
-                    'support': support,
-                    'confidence': confidence_a_to_b,
-                    'lift': lift_a_to_b
-                })
-                
-                rules.append({
-                    'antecedents': items[1],
-                    'consequents': items[0],
-                    'support': support,
-                    'confidence': confidence_b_to_a,
-                    'lift': lift_b_to_a
-                })
-        
+        te = TransactionEncoder()
+        te_ary = te.fit(transaction_list).transform(transaction_list)
+        df2 = pd.DataFrame(te_ary, columns=te.columns_)
+        frequent_itemsets = apriori(df2, min_support=0.01, use_colnames=True)   #nilai support yang digunakan
+        try:
+            rules = association_rules(frequent_itemsets, metric='confidence', min_threshold=0.1)  #nilai confidence yang diinginkan
+        except ValueError as e:
+            st.error(f"Terjadi kesalahan saat menghasilkan aturan asosiasi: {str(e)}")
+            st.stop()
         end_time = time.time()  
         processing_time = end_time - start_time  
-        
         col1, col2 = st.columns(2)
         col1.subheader('Hasil Rules (Pola Pembelian Pelanggan)')
         st.write('Total rules yang dihasilkan :', len(rules))
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
-        
-        if len(rules) == 0:
+        if len(rules) == 0:  #tidak ada aturan yang dihasilkan
             st.write("Tidak ada aturan yang dihasilkan.")
         else:
-            matrix = pd.DataFrame(rules)
-            matrix['antecedents'] = matrix['antecedents'].apply(lambda x: prep_frozenset(frozenset([x])))
-            matrix['consequents'] = matrix['consequents'].apply(lambda x: prep_frozenset(frozenset([x])))
+            antecedents = rules['antecedents'].apply(prep_frozenset)
+            consequents = rules['consequents'].apply(prep_frozenset)
+            matrix = {
+                'antecedents': antecedents,
+                'consequents': consequents,
+                'support': rules['support'],
+                'confidence': rules['confidence'],
+                'lift ratio': rules['lift'],
+                'contribution': rules['support'] * rules['confidence']
+            }
+            matrix = pd.DataFrame(matrix)
             matrix.reset_index(drop=True, inplace=True)
             matrix.index += 1
             col1.write(matrix)
-            
             col2.subheader('Keterangan')
             col2.write("- Support = Seberapa sering sebuah rules tersebut muncul dalam data,")
             col2.write("- Confidence = Seberapa sering rules tersebut dikatakan benar")
             col2.write("- Lift Ratio = Ukuran Kekuatan hubungan antara dua item")
             col2.write("- Contribution = Kontribusi setiap rules terhadap peningkatan lift secara keseluruhan")
             
-            # menampilkan rekomendasi stok barang untuk dibeli
+            #menampilkan rekomendasi stok barang untuk dibeli
             col1, col2 = st.columns(2)
+            # Menerima rekomendasi stok barang berdasarkan antecedents dan consequents
             col1.subheader("Rekomendasi stok barang untuk dibeli:")
             recommended_products = []
             recommended_products_contribution = {}
 
             # Ambil semua item dari antecedents dan consequents dari setiap aturan asosiasi
-            for antecedent, consequent, contribution in zip(matrix['antecedents'], matrix['consequents'], matrix['support'] * matrix['confidence']):
+            for antecedent, consequent, contribution in zip(matrix['antecedents'], matrix['consequents'], matrix['contribution']):
                 antecedent_list = antecedent.split(', ')
                 consequent_list = consequent.split(', ')
                 items = antecedent_list + consequent_list
@@ -211,7 +179,7 @@ def MBA(df, pembeli, produk):
             for idx, item in enumerate(recommended_products_sorted, start=1):
                 col1.write(f"{idx}. <font color='red'>{item}</font>", unsafe_allow_html=True)
 
-            # menampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
+            #menampilkan informasi tentang produk yang paling laris terjual dalam bentuk tabel
             most_sold = df[produk].value_counts()
             if not most_sold.empty:
                 col2.subheader("Jumlah Produk Terjual")
@@ -219,7 +187,7 @@ def MBA(df, pembeli, produk):
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
 
-            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift ratio']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
                 st.write('Support : {:.3f}'.format(supp))
                 st.write('Confidence : {:.3f}'.format(conf))
