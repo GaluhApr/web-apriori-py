@@ -26,7 +26,7 @@ st.markdown("""<style>
             background-color: #f0f0f0;
         }
         body {
-            zoom: 150%;
+            zoom: 130%;
         }
     </style>""", unsafe_allow_html=True)
 
