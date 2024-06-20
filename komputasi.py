@@ -9,7 +9,6 @@ import time
 from sklearn.preprocessing import MinMaxScaler
 
 
-
 def normalize_data(df):
     scaler = MinMaxScaler()
     df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
