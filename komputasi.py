@@ -107,7 +107,7 @@ def data_summary(df, pembeli, tanggal, produk):
         st.stop()
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
-    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
+    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True, unsafe_allow_html=True)
     show_transaction_info(df, produk, pembeli)
     return df
 
