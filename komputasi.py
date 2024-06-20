@@ -77,7 +77,7 @@ def show_transaction_info(df, produk, pembeli):
             st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
-        
+
 def display_custom_table(df):
     # CSS untuk memperbesar font tabel
     css = """
