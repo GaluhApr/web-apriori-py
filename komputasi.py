@@ -78,39 +78,6 @@ def show_transaction_info(df, produk, pembeli):
     except Exception as e:
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
-def display_custom_table(df):
-    # CSS untuk memperbesar font tabel
-    css = """
-    <style>
-        .custom-table {
-            font-size: 20px;  /* Mengubah ukuran font tabel */
-            width: 100%;  /* Lebar tabel penuh */
-        }
-        .custom-table th {
-            background-color: #f0f0f0;  /* Warna latar belakang header tabel */
-            color: black;  /* Warna teks header tabel */
-        }
-        .custom-table td {
-            color: black;  /* Warna teks isi tabel */
-        }
-    </style>
-    """
-    st.markdown(css, unsafe_allow_html=True)  # Menyisipkan CSS ke dalam Streamlit app
-
-    # Membuat tabel HTML
-    html = "<table class='custom-table'><tr>"  # Mulai tabel dengan class custom-table
-    for col in df.columns:
-        html += f"<th>{col}</th>"
-    html += "</tr>"
-    for _, row in df.iterrows():
-        html += "<tr>"
-        for val in row:
-            html += f"<td>{val}</td>"
-        html += "</tr>"
-    html += "</table>"
-
-    st.markdown(html, unsafe_allow_html=True)
-
 def data_summary(df, pembeli, tanggal, produk):
     st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
