@@ -80,31 +80,8 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 
-
 def data_summary(df, pembeli, tanggal, produk):
-    # CSS untuk mengatur ukuran font dan membuat tabel scrollable
-    st.markdown("""<style>
-        .big-font {font-size: 30px !important; font-weight: bold;}
-        .scrollable-table-wrapper {
-            overflow-x: auto;
-        }
-        .scrollable-table {
-            width: 100%; /* Mengisi lebar tabel */
-            max-height: 400px;
-            overflow-y: auto;
-            display: block;
-            font-size: 14px;
-        }
-        th, td {
-            text-align: center; /* Pusatkan teks di header dan sel */
-            font-size: 14px;
-            padding: 8px; /* Beri padding agar lebih mudah dibaca */
-        }
-        th {
-            background-color: #f0f0f0; /* Warna latar header */
-        }
-    </style>""", unsafe_allow_html=True)
-    
+    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -121,12 +98,25 @@ def data_summary(df, pembeli, tanggal, produk):
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     
-    # Tambahkan wrapper untuk tabel scrollable
-    st.markdown('<div class="scrollable-table-wrapper">', unsafe_allow_html=True)
-    st.markdown('<div class="scrollable-table">', unsafe_allow_html=True)
-    st.write(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Mengubah ukuran font untuk header kolom (th) dan sel (td) di dalam tabel HTML
+    css = """
+    <style>
+        table {
+            font-size: 20px;
+        }
+        th {
+            font-size: 20px;
+        }
+        td {
+            font-size: 18px;
+        }
+    </style>
+    """
+    st.write(css, unsafe_allow_html=True)
+    
+    # Mengonversi DataFrame menjadi format HTML dengan penyesuaian ukuran font
+    html = df.to_html(classes='dataframe', escape=False)
+    st.write(html, unsafe_allow_html=True)
     
     show_transaction_info(df, produk, pembeli)
     
