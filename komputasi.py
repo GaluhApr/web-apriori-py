@@ -8,6 +8,29 @@ import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
 
+st.markdown("""<style>
+        .big-font { font-size: 30px !important; font-weight: bold; }
+        .scrollable-table-wrapper {
+            max-height: 400px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 16px;
+        }
+        th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        body {
+            zoom: 150%;
+        }
+    </style>""", unsafe_allow_html=True)
 
 def normalize_data(df):
     scaler = MinMaxScaler()
@@ -80,7 +103,6 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
