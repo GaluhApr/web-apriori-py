@@ -8,17 +8,6 @@ import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
 
-html = df.to_html(classes='dataframe', escape=False)
-
-# Mengatur CSS untuk ukuran font
-css = """
-<style>
-    .dataframe tbody tr td {
-        font-size: 20px;
-    }
-</style>
-"""
-st.markdown(css, unsafe_allow_html=True)
 
 def normalize_data(df):
     scaler = MinMaxScaler()
@@ -91,25 +80,44 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown("""<style>.big-font {font-size:30px !important;font-weight: bold;}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.dataframe tbody tr th {font-size: 20px;}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.dataframe tbody tr td {font-size: 20px;}</style>""", unsafe_allow_html=True)
+    st.markdown("""<style>.big-font {font-size: 30px !important; font-weight: bold;}</style>""", unsafe_allow_html=True)
     st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
+    
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
     dateformat = col2.radio('Tentukan format urutan tanggal', ('ddmmyy', 'mmddyy', 'yymmdd'))
+    
     try:
         df = prep_date(df, tanggal, sep, dateformat)
-    except ValueError:
-        st.warning('Format Atau Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
+    except (ValueError, IndexError):
+        st.warning('Format atau separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
-    except IndexError:
-        st.warning('Format Atau Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
-        st.stop()
+    
     st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
-    st.dataframe(html.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True,  unsafe_allow_html=True)
+    
+    # Mengubah ukuran font untuk header kolom (th) dan sel (td) di dalam tabel DataFrame
+    css = """
+    <style>
+        .dataframe th {
+            font-size: 14px;
+        }
+        .dataframe td {
+            font-size: 12px;
+        }
+    </style>
+    """
+    st.markdown(css, unsafe_allow_html=True)
+    
+    st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
+    
     show_transaction_info(df, produk, pembeli)
+    
     return df
+
 
 def prep_frozenset(rules):
     temp = re.sub(r'frozenset\({', '', str(rules))
