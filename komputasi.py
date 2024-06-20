@@ -103,8 +103,8 @@ def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     
     # Input untuk menyesuaikan minimum support dan confidence
-    min_support = st.number_input("Masukkan nilai support:", min_value=0.001, max_value=1.0,)
-    min_confidence = st.number_input("Masukkan minimum confidence:", min_value=0.01, max_value=1.0,)
+    min_support = st.number_input("Masukkan nilai support:", min_value=0.001, max_value=1.0,  format="%.3f")
+    min_confidence = st.number_input("Masukkan minimum confidence:", min_value=0.01, max_value=1.0,  format="%.3f")
     
     if st.button("Mulai Perhitungan Asosiasi"):
         start_time = time.time()  
