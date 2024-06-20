@@ -265,6 +265,8 @@ def MBA(df, pembeli, produk):
             else:
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
+
+            st.subheader('Pola Pembelian Pelanggan')
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
                 st.write('Support : {:.4f}'.format(supp))
