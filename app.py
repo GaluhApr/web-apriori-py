@@ -12,17 +12,6 @@ st.markdown("""<style>
             font-size: 20px; /* Atur ukuran font keseluruhan */
             zoom: 125%;
         }
-            
-        div[data-testid="stDataFrame"] table {
-            font-size: 18px !important; /* Atur ukuran font tabel */
-        }
-        div[data-testid="stDataFrame"] th {
-            background-color: #f0f0f0; /* Warna latar belakang header tabel */
-            color: black; /* Warna teks header tabel */
-        }
-        div[data-testid="stDataFrame"] td {
-            color: black; /* Warna teks isi tabel */
-        }
     </style>""", unsafe_allow_html=True)
 
 st.title('Data Mining Apriori')
