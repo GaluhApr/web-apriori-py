@@ -84,13 +84,13 @@ def data_summary(df, pembeli, tanggal, produk):
     st.markdown("""<style>
         .big-font {font-size: 30px !important; font-weight: bold;}
         table {
-            font-size: 14px;
+            font-size: 20px;
         }
         th {
-            font-size: 14px;
+            font-size: 20px;
         }
         td {
-            font-size: 12px;
+            font-size: 18px;
         }
     </style>""", unsafe_allow_html=True)
     
