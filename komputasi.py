@@ -229,8 +229,8 @@ def MBA(df, pembeli, produk):
             
             for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
-                st.write('Support : {:.3f}'.format(supp))
-                st.write('Confidence : {:.3f}'.format(conf))
-                st.write('Lift Ratio : {:.3f}'.format(lift))
-                st.write('Contribution : {:.3f}'.format(supp * conf))
+                st.write('Support : {:.4f}'.format(supp))
+                st.write('Confidence : {:.4f}'.format(conf))
+                st.write('Lift Ratio : {:.4f}'.format(lift))
+                st.write('Contribution : {:.4f}'.format(supp * conf))
                 st.write('')
