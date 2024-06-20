@@ -8,20 +8,6 @@ import streamlit as st
 import time
 from sklearn.preprocessing import MinMaxScaler
 
-st.markdown("""<style>
-        /* Menargetkan tabel DataFrame secara spesifik */
-        div[data-testid="stDataFrame"] table {
-            font-size: 20px !important; /* Atur ukuran font tabel */
-        }
-        div[data-testid="stDataFrame"] th {
-            background-color: #f0f0f0 !important; /* Warna latar belakang header tabel */
-            color: black !important; /* Warna teks header tabel */
-        }
-        div[data-testid="stDataFrame"] td {
-            color: black !important; /* Warna teks isi tabel */
-        }
-    </style>""", unsafe_allow_html=True)
-
 def normalize_data(df):
     scaler = MinMaxScaler()
     df[['Tanggal', 'Bulan', 'Tahun']] = scaler.fit_transform(df[['Tanggal', 'Bulan', 'Tahun']])
