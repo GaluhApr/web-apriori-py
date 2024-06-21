@@ -150,8 +150,8 @@ def MBA(df, pembeli, produk):
                 
                 if support >= min_support:
                     # Hitung confidence dan lift untuk setiap aturan
-                    confidence_a_to_b = support / (item_counts[items[0]] / total_transactions)
-                    confidence_b_to_a = support / (item_counts[items[1]] / total_transactions)
+                    confidence_a_to_b = item_counts[itemset] / item_counts[items[0]]
+                    confidence_b_to_a = item_counts[itemset] / item_counts[items[1]]
                     lift_a_to_b = confidence_a_to_b / (item_counts[items[1]] / total_transactions)
                     lift_b_to_a = confidence_b_to_a / (item_counts[items[0]] / total_transactions)
                     contribution_a_to_b = support * confidence_a_to_b
