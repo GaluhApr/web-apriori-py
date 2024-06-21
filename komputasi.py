@@ -119,7 +119,7 @@ def MBA(df, pembeli, produk):
         transaction_list = []
         for i in df[pembeli].unique():
             tlist = list(set(df[df[pembeli]==i][produk]))
-            if len(tlist)>0:
+            if len(tlist) > 0:
                 transaction_list.append(tlist)
         
         # Hitung frekuensi itemset
@@ -154,6 +154,8 @@ def MBA(df, pembeli, produk):
                     confidence_b_to_a = support / (item_counts[items[1]] / total_transactions)
                     lift_a_to_b = confidence_a_to_b / (item_counts[items[1]] / total_transactions)
                     lift_b_to_a = confidence_b_to_a / (item_counts[items[0]] / total_transactions)
+                    contribution_a_to_b = support * confidence_a_to_b
+                    contribution_b_to_a = support * confidence_b_to_a
                     
                     if confidence_a_to_b >= min_confidence:
                         rules.append({
@@ -161,7 +163,8 @@ def MBA(df, pembeli, produk):
                             'consequents': items[1],
                             'support': support,
                             'confidence': confidence_a_to_b,
-                            'lift': lift_a_to_b
+                            'lift': lift_a_to_b,
+                            'contribution': contribution_a_to_b
                         })
                     
                     if confidence_b_to_a >= min_confidence:
@@ -170,7 +173,8 @@ def MBA(df, pembeli, produk):
                             'consequents': items[0],
                             'support': support,
                             'confidence': confidence_b_to_a,
-                            'lift': lift_b_to_a
+                            'lift': lift_b_to_a,
+                            'contribution': contribution_b_to_a
                         })
         
         end_time = time.time()  
@@ -204,7 +208,7 @@ def MBA(df, pembeli, produk):
             recommended_products_contribution = {}
             
             # Ambil semua item dari antecedents dan consequents dari setiap aturan asosiasi
-            for antecedent, consequent, contribution in zip(matrix['antecedents'], matrix['consequents'], matrix['support'] * matrix['confidence']):
+            for antecedent, consequent, contribution in zip(matrix['antecedents'], matrix['consequents'], matrix['contribution']):
                 antecedent_list = antecedent.split(', ')
                 consequent_list = consequent.split(', ')
                 items = antecedent_list + consequent_list
@@ -237,12 +241,12 @@ def MBA(df, pembeli, produk):
             
 
             st.subheader('Pola Pembelian Pelanggan')
-            for a, c, supp, conf, lift in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift']), key=lambda x: x[4], reverse=True):
+            for a, c, supp, conf, lift, contrib in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift'], matrix['contribution']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
                 st.write('Support : {:.4f}'.format(supp))
                 st.write('Confidence : {:.4f}'.format(conf))
                 st.write('Lift Ratio : {:.4f}'.format(lift))
-                st.write('Contribution : {:.4f}'.format(supp * conf))
+                st.write('Contribution : {:.4f}'.format(contrib))
                 st.write('')
 
             st.markdown('<br><br>', unsafe_allow_html=True)  # Menambahkan spasi vertikal
