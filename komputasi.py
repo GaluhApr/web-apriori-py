@@ -96,7 +96,6 @@ def data_summary(df, pembeli, tanggal, produk):
     except IndexError:
         st.warning('Format Atau Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
-    st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
     show_transaction_info(df, produk, pembeli)
