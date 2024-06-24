@@ -181,7 +181,7 @@ def MBA(df, pembeli, produk):
         processing_time = end_time - start_time  
         
         col1, col2 = st.columns(2)
-        col1.subheader('Hasil Rules (Pola Pembelian Pelanggan)')
+        col1.subheader('Hasil Rules (Aturan)')
         st.write('Total rules yang dihasilkan :', len(rules))
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
         
@@ -240,7 +240,7 @@ def MBA(df, pembeli, produk):
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
 
-            st.subheader('Pola Pembelian Pelanggan')
+            st.subheader('Pola Pembelian Pelanggan:')
             for a, c, supp, conf, lift, contrib in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift'], matrix['contribution']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
                 st.write('Support : {:.4f}'.format(supp))
