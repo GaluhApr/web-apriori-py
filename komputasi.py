@@ -83,7 +83,7 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Setelan Dataset</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
