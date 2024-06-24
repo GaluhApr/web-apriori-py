@@ -48,8 +48,8 @@ def dataset_settings(df, pembeli, tanggal, produk):
 
 def show_transaction_info(df, produk, pembeli):
     try:
-        col1, col2 = st.columns(2)
         st.subheader(f'Informasi Transaksi:')
+        col1, col2 = st.columns(2)
         total_produk = df[produk].nunique()
         total_transaksi = df[pembeli].nunique()
         total_barang_terjual = df[produk].sum()  #menghitung jumlah total barang terjual
