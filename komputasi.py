@@ -37,7 +37,7 @@ def dataset_settings(df, pembeli, tanggal, produk):
     c1, c2 = st.columns((2, 1))
     year_list = ['Semua']
     year_list = np.append(year_list, df['Tahun'].unique())
-    by_year = c1.selectbox('Tahun ', (year_list))
+    by_year = c1.selectbox('Pilih Tahun ', (year_list))
     if by_year != 'Semua':
         df = df[df['Tahun'] == int(by_year)]
         month_list = np.arange(1, 13)  # Daftar bulan dari 1 sampai 12
