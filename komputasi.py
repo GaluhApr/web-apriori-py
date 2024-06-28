@@ -37,7 +37,7 @@ def dataset_settings(df, pembeli, tanggal, produk):
     c1, c2 = st.columns((2, 1))
     year_list = ['Semua']
     year_list = np.append(year_list, df['Tahun'].unique())
-    by_year = c1.selectbox('Tahun ', (year_list))
+    by_year = c1.selectbox('Pilih Tahun ', (year_list))
     if by_year != 'Semua':
         df = df[df['Tahun'] == int(by_year)]
         month_list = np.arange(1, 13)  # Daftar bulan dari 1 sampai 12
@@ -48,8 +48,8 @@ def dataset_settings(df, pembeli, tanggal, produk):
 
 def show_transaction_info(df, produk, pembeli):
     try:
-        col1, col2 = st.columns(2)
         st.subheader(f'Informasi Transaksi:')
+        col1, col2 = st.columns(2)
         total_produk = df[produk].nunique()
         total_transaksi = df[pembeli].nunique()
         total_barang_terjual = df[produk].sum()  #menghitung jumlah total barang terjual
@@ -83,7 +83,7 @@ def show_transaction_info(df, produk, pembeli):
         st.error(f"Terjadi kesalahan saat menampilkan informasi transaksi: {str(e)}")
 
 def data_summary(df, pembeli, tanggal, produk):
-    st.markdown('<p class="big-font">Ringkasan Dataset</p>', unsafe_allow_html=True)
+    st.markdown('<p class="big-font">Setelan Dataset</p>', unsafe_allow_html=True)
     col1, col2 = st.columns(2)
     sep_option = col1.radio('Tentukan separator tanggal', options=[('-', 'Dash'), ('/', 'Slash')])
     sep = sep_option[0]
@@ -96,7 +96,6 @@ def data_summary(df, pembeli, tanggal, produk):
     except IndexError:
         st.warning('Format Atau Separator tanggal salah! Silakan cek kembali dan pastikan pemisah yang benar.')
         st.stop()
-    st.write('Setelan Tampilan Dataset:')
     df = dataset_settings(df, pembeli, tanggal, produk)
     st.dataframe(df.sort_values(by=['Tahun', 'Bulan', 'Tanggal'], ascending=True), use_container_width=True)
     show_transaction_info(df, produk, pembeli)
@@ -111,7 +110,7 @@ def MBA(df, pembeli, produk):
     st.header('Association Rule Mining Menggunakan Apriori')
     
     # Input untuk menyesuaikan minimum support dan confidence
-    min_support = st.number_input("Masukkan nilai support:", min_value=0.001, max_value=1.0,  format="%.3f")
+    min_support = st.number_input("Masukkan minimum support:", min_value=0.001, max_value=1.0,  format="%.3f")
     min_confidence = st.number_input("Masukkan minimum confidence:", min_value=0.01, max_value=1.0,  format="%.3f")
     
     if st.button("Mulai Perhitungan Asosiasi"):
@@ -181,7 +180,7 @@ def MBA(df, pembeli, produk):
         processing_time = end_time - start_time  
         
         col1, col2 = st.columns(2)
-        col1.subheader('Hasil Rules (Pola Pembelian Pelanggan)')
+        col1.subheader('Hasil Rules (Aturan)')
         st.write('Total rules yang dihasilkan :', len(rules))
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
         
@@ -240,7 +239,7 @@ def MBA(df, pembeli, produk):
                 st.warning("Tidak ada data yang sesuai dengan kriteria yang dipilih.")
             
 
-            st.subheader('Pola Pembelian Pelanggan')
+            st.subheader('Pola Pembelian Pelanggan:')
             for a, c, supp, conf, lift, contrib in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift'], matrix['contribution']), key=lambda x: x[4], reverse=True):
                 st.info(f'Jika melakukan pembelian barang {a}, maka juga lakukan pembelian barang {c}')
                 st.write('Support : {:.4f}'.format(supp))
