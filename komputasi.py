@@ -242,7 +242,7 @@ def MBA(df, pembeli, produk):
 
             st.subheader('Pola Pembelian Pelanggan')
             for a, c, supp, conf, lift, contrib in sorted(zip(matrix['antecedents'], matrix['consequents'], matrix['support'], matrix['confidence'], matrix['lift'], matrix['contribution']), key=lambda x: x[4], reverse=True):
-                st.info(f'Jika customer membeli {a}, maka customer juga membeli {c}')
+                st.info(f'Jika melakukan pembelian barang {a}, maka juga lakukan pembelian barang {c}')
                 st.write('Support : {:.4f}'.format(supp))
                 st.write('Confidence : {:.4f}'.format(conf))
                 st.write('Lift Ratio : {:.4f}'.format(lift))
