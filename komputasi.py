@@ -181,7 +181,7 @@ def MBA(df, pembeli, produk):
         
         col1, col2 = st.columns(2)
         col1.subheader('Hasil Rules (Aturan)')
-        st.write('Total rules yang dihasilkan :', len(rules), 'Kombinasi')
+        st.info('Total rules yang dihasilkan :', len(rules), 'Kombinasi')
         col1.write(f'Waktu yang dibutuhkan untuk memproses rule: {processing_time:.2f} detik')
         
         if len(rules) == 0:
