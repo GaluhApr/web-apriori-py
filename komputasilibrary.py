@@ -124,6 +124,9 @@ def MBA(df, pembeli, produk):
         transaction_list = df.groupby(pembeli)[produk].apply(list).reset_index()
         transaction_list = transaction_list[produk].apply(lambda x: pd.Series(1, index=x)).fillna(0).astype(int)
         
+        # Hilangkan duplikasi indeks
+        transaction_list = transaction_list.loc[:, ~transaction_list.columns.duplicated()]
+
         # Hitung frekuensi itemset menggunakan apriori
         frequent_itemsets = apriori(transaction_list, min_support=min_support, use_colnames=True)
         
@@ -204,7 +207,3 @@ def MBA(df, pembeli, produk):
 # Fungsi tambahan untuk mengonversi frozenset ke string yang dapat dibaca
 def prep_frozenset(fs):
     return ', '.join(list(fs))
-
-# Contoh penggunaan fungsi MBA dengan DataFrame df
-# df = pd.read_csv('path_to_your_transaction_data.csv')
-# MBA(df, 'customer_id', 'product')
