@@ -68,7 +68,7 @@ def show_transaction_info(df, produk, pembeli):
             most_sold = most_sold.sort_values(ascending=True)
         if not most_sold.empty:
             c1, c2 = st.columns([3, 1])  # Mengubah proporsi kolom
-            plt.figure(figsize=(8, 4))  # Meningkatkan ukuran grafik
+            plt.figure(figsize=(6, 4))  # Meningkatkan ukuran grafik
             plt.title('Grafik Penjualan', fontsize=20)
             plt.xlabel('Produk', fontsize=14)   
             plt.ylabel('Jumlah', fontsize=14)
