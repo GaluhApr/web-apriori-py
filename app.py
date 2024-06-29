@@ -10,7 +10,7 @@ st.markdown("""<style>
         .big-font { font-size: 30px !important; font-weight: bold; }
         body {
             font-size: 20px; /* Atur ukuran font keseluruhan */
-            zoom: 100%;
+            zoom: 125%;
         }
     </style>""", unsafe_allow_html=True)
 
