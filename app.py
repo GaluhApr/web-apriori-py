@@ -1,7 +1,7 @@
 import pandas as pd
 import streamlit as st
 from PIL import Image
-from komputasi import data_summary, MBA
+from komputasimanual import data_summary, MBA
 
 
 st.set_page_config(page_title="Apriori Toko Handari", page_icon="images/basket.png", layout="wide")
